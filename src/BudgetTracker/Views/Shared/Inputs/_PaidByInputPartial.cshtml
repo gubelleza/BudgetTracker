@@ -1,0 +1,16 @@
+﻿@model IExpenseInputViewModel
+
+<div class="form-group">
+    <label for="select-paid-by">Paid By:</label>
+    <select 
+            id="select-paid-by" 
+            asp-for="BudgetMemberName"
+            value="@Model.BudgetMemberName"
+            class="custom-select"
+    >
+        @foreach (var name in Model.BudgetMembersNames)
+        {
+            <option value="@name">@name</option>
+        }
+    </select>
+</div>

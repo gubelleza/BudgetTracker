@@ -1,0 +1,13 @@
+﻿@model IExpenseInputViewModel
+
+<div class="form-group">
+    <label for="amount-paid">Amount Paid:</label>
+    <input 
+           id="amount-paid" 
+           type="number" 
+           step="any" 
+           asp-for="AmountPaid" 
+           value="@Model.AmountPaid"
+           class="form-control" 
+    />
+</div>

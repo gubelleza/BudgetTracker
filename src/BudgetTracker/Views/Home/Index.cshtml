@@ -1,0 +1,135 @@
+﻿@model HomeDisplayViewModel
+
+@{ 
+    ViewData["Title"] = "Home Page";
+    Func<int, string> SelectRowStyle = (int index) => index % 2 == 0 ? "even-rows" : "odd-rows";
+}
+
+@if (!Model.HasExpenses)
+{
+<div>There aren't any expenses to show for this month @DateTime.Now.ToString("MM/yyyy")</div> }
+else
+{
+
+@for(int j = 1; j < Model.Expenses.Count; j++)
+{
+    <form id="@j" asp-controller="Expenses" asp-action="Edit">
+    </form>
+}
+
+<table class="table shadow rounded-sm">
+    <thead class="table-head text-center">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Category</th>
+            <th scope="col">Amount Paid</th>
+            <th scope="col">Recurrence</th>
+            <th scope="col">Paid At</th>
+            <th scope="col">Paid By</th>
+            <th scope="col">Remove</th>
+            <th scope="col">Edit</th>
+        </tr>
+    </thead>
+    <tbody class="text-center">
+        @{var i = 1; }
+        @foreach (var expense in Model.Expenses.SelectMany(group => group))
+        {   
+            <tr class="@SelectRowStyle(i)">
+                <th scope="row">@i</th>
+                <td id="cat-name-row">
+                    <div class="display-info-@i.ToString()">@expense.ExpenseCategory.CategoryName</div>
+                    <div hidden class="edit-info-@i.ToString()">
+                        <select id="select-category"
+                                asp-for="EditExpenseViewModel.ExpenseCategoryId"
+                                class="custom-select"
+                                value="@expense.ExpenseCategory.CategoryId"
+                                form="@i"
+                        >
+                            @foreach (var category in Model.EditExpenseViewModel.CurrentCategories)
+                            {
+                                <option value="@category.CategoryId">@category.CategoryName</option>
+                            }
+                        </select>
+                    </div>
+                </td>
+                <td id="amnt-paid-row">
+                    <div class="display-info-@i.ToString()">@expense.AmountPaid.ToString("C")</div>
+                    <div hidden class="edit-info-@i.ToString()">
+                        <input id="amount-paid"
+                               type="number"
+                               step="any"
+                               asp-for="EditExpenseViewModel.AmountPaid"
+                               value="@expense.AmountPaid"
+                               placeholder="@expense.AmountPaid.ToString()"
+                               class="form-control"
+                               form="@i"/>
+                    </div>
+                </td>
+                <td id="recurrence-row">
+                    <div class="display-info-@i.ToString()">@expense.Recurrence</div>
+                    <div hidden class="edit-info-@i.ToString()">
+                        <select id="select-recurrence"
+                                asp-for="EditExpenseViewModel.Recurrence"
+                                value=">@expense.Recurrence"
+                                class="custom-select"
+                                form="@i"
+                        >
+                            @foreach (var item in Enum.GetValues<Recurrence>())
+                            {
+                                <option value="@item">@item.ToString()</option>
+                            }
+                        </select>
+                    </div>
+                </td>
+                <td id="paid-at-row">
+                    <div class="display-info-@i.ToString()">@expense.PaidAt.ToString("M")</div>
+                    <div hidden class="edit-info-@i.ToString()">
+                        <input id="paid-at"
+                               type="date"
+                               asp-for="EditExpenseViewModel.PaidAt"
+                               class="form-control"
+                               value="@expense.PaidAt"
+                               form="@i"
+                    >
+                    </div>
+                </td>
+                <td id="paid-by-row">
+                    <div class="display-info-@i.ToString()">@expense.BudgetMemberName</div>
+                    <div hidden class="edit-info-@i.ToString()">
+                        <select id="select-paid-by"
+                                asp-for="EditExpenseViewModel.BudgetMemberName"
+                                value="@expense.BudgetMemberName"
+                                class="custom-select"
+                                form="@i">
+                            @foreach (var name in Model.EditExpenseViewModel.BudgetMembersNames)
+                            {
+                                <option value="@name">@name</option>
+                            }
+                        </select>
+                    </div>
+                </td>
+                <td>
+                    <a asp-action="Delete" 
+                       asp-controller="Expense" 
+                       asp-route-id="@expense.ExpenseId" 
+                       class="text-danger"
+                       onclick="return confirm('Delete this row?')"
+                    >
+                        <i class="fa fa-minus" aria-hidden="true"></i>
+                    </a>
+                </td>
+                <td>        
+                    <a href="#" class="text-success edition-trigger" id="@i">
+                        <i class="fa fa-edit" aria-hidden="true"></i>
+                    </a>
+                </td>
+            </tr>
+            i++;
+        }
+    </tbody>
+</table>
+}
+
+
+
+

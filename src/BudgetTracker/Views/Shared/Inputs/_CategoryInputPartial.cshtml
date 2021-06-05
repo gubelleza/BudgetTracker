@@ -1,0 +1,16 @@
+﻿@model IExpenseInputViewModel
+
+<div class="form-group">
+    <label for="select-category">Category:</label>
+    <select 
+            id="select-category" 
+            asp-for="ExpenseCategoryId" 
+            class="custom-select"
+            value="@Model.ExpenseCategoryId"
+    >
+        @foreach (var category in Model.CurrentCategories)
+        {
+            <option value="@category.CategoryId">@category.CategoryName</option>
+        }
+    </select>
+</div>

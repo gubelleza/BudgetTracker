@@ -1,0 +1,12 @@
+﻿@model IExpenseInputViewModel
+
+<div class="form-group">
+    <label for="paid-at">Paid At:</label>
+    <input 
+           id="paid-at" 
+           type="date" 
+           asp-for="PaidAt" 
+           class="form-control" 
+           value="@Model.PaidAt"
+    >
+</div>
