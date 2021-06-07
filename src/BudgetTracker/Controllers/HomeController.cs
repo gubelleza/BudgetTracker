@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using BudgetTracker.Models;
@@ -20,10 +21,17 @@ namespace BudgetTracker.Controllers
 
         public IActionResult Index()
         {
+            if (TempData.TryGetValue("ModelErrors", out var errors) && 
+                errors is Dictionary<string, string> errorsDict)
+            {
+                foreach(var (key, value) in errorsDict)
+                    ModelState.AddModelError(key, value);
+            }
+            
             return View(new HomeDisplayViewModel
             {
                 Expenses = _expensesService.GetCurrentMonthExpenses(),
-                EditExpenseViewModel = _expensesService.BuildExpenseInputViewModel()
+                EditExpenseViewModel = _expensesService.BuildEditExpenseViewModel()
             });
         }
 

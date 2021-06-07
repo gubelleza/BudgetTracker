@@ -8,6 +8,6 @@ namespace BudgetTracker.Models.ViewModels
     {
         public List<IGrouping<string, Expense>> Expenses { get; set; }
         public bool HasExpenses => Expenses != null && Expenses.Any();
-        public IExpenseInputViewModel EditExpenseViewModel { get; set; }
+        public ExpenseEditViewModel EditExpenseViewModel { get; set; }
     }
 }

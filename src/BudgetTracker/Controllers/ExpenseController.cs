@@ -16,13 +16,13 @@ namespace BudgetTracker.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View(_expensesService.BuildExpenseInputViewModel());
+            return View(_expensesService.BuildCreateExpenseViewModel());
         }
 
         [HttpPost]
-        public IActionResult SubmitCreate(IExpenseInputViewModel createExpenseVm)
+        public IActionResult SubmitCreate(CreateExpenseViewModel createExpenseVm)
         {
-            if (_expensesService.AddExpense(createExpenseVm.ToExpense, ModelState))
+            if (_expensesService.AddExpense(createExpenseVm, ModelState))
             {
                 return RedirectToAction("Index", "Home");
             }
@@ -40,8 +40,11 @@ namespace BudgetTracker.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(string id)
+        public IActionResult Edit(HomeDisplayViewModel homeVm)
         {
+            if (!_expensesService.EditExpense(homeVm.EditExpenseViewModel, ModelState))
+                ViewData["ModelErrors"] = _expensesService.ModelErrors;
+            
             return RedirectToAction("Index", "Home");
         }
     }

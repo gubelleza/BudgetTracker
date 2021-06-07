@@ -33,6 +33,7 @@ namespace BudgetTracker
                 options.UseSqlite("Data Source=./Data/budget_tracker.sqlite");
             });
             services.AddScoped<IExpensesService, ExpensesService>();
+            services.AddAutoMapper(typeof(Startup));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

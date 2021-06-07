@@ -1,12 +1,12 @@
-@model IExpenseInputViewModel
+@model CreateExpenseViewModel
 
 <div>
     <form asp-action="SubmitCreate" method="post">
-        <partial name="/Inputs/_RecurrenceInputPartial.cshtml" model="@Model">
-        <partial name="/Inputs/_AmountPaidInputPartial.cshtml" model="@Model">
-        <partial name="/Inputs/_PaidByInputPartial.cshtml" model="@Model">
-        <partial name="/Inputs/_PaidAtInputPartial.cshtml" model="@Model">
-        <partial name="/Inputs/_CategoryInputPartial.cshtml" model="@Model">
+        <partial name="Inputs/_RecurrenceInputPartial" model="@Model"/>
+        <partial name="Inputs/_AmountPaidInputPartial" model="@Model"/>
+        <partial name="Inputs/_PaidByInputPartial" model="@Model"/>
+        <partial name="Inputs/_PaidAtInputPartial" model="@Model"/>
+        <partial name="Inputs/_CategoryInputPartial" model="@Model"/>
 
         <input type="submit" value="Confirm" class="btn btn-outline-dark" />
     </form>

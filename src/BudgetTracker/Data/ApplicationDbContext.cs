@@ -17,6 +17,5 @@ namespace BudgetTracker.Data
             : base(options)
         {
         }
-        
     }
 }

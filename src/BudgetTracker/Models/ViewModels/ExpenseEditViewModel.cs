@@ -1,30 +1,22 @@
-﻿using BudgetTracker.Models.Enums;
-using BudgetTracker.Models.Expenses;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+using BudgetTracker.Models.Enums;
+using BudgetTracker.Models.Expenses;
 
 namespace BudgetTracker.Models.ViewModels
 {
-    public class CreateExpenseViewModel 
+    public class ExpenseEditViewModel
     {
-        [Required]
+        public int ExpenseId { get; set; }
         public Recurrence Recurrence { get; set; }
         
-        [Required]
+        [Range(1.0, Double.MaxValue)]
         public decimal? AmountPaid { get; set; }
         
-        [Required]
         public DateTime? PaidAt { get; set; }
-        
-        [Required]
-        [MinLength(3)]
         public string BudgetMemberName { get; set; }
-        
         public int? ExpenseCategoryId { get; set; }
-        
         public List<ExpenseCategory> CurrentCategories { get; set; }
         public List<string> BudgetMembersNames { get; set; }
     }
