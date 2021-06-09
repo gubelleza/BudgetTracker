@@ -11,12 +11,6 @@
 else
 {
 
-@for(var j = 1; j < Model.Expenses.Count; j++)
-{
-    <form id="@j.ToString()" asp-controller="Expense" asp-action="Edit">
-    </form>
-}
-
 <table class="table shadow rounded-sm">
     <thead class="table-head text-center">
         <tr>
@@ -34,8 +28,10 @@ else
         @{var i = 1; }
         @foreach (var expense in Model.Expenses.SelectMany(group => group))
         {   
+            <form id="@i.ToString()" asp-controller="Expense" asp-action="Edit">
+            </form>
             <tr class="@SelectRowStyle(i)">
-                <th scope="row">@i</th>
+                <th class="align-middle" scope="row">@i</th>
                 <td id="cat-name-row">
                     <div class="display-info-@i.ToString()">@expense.ExpenseCategory.CategoryName</div>
                     <div hidden class="edit-info-@i.ToString()">
@@ -114,11 +110,11 @@ else
                             <i class="fa fa-edit" aria-hidden="true"></i>
                         </a>
                     </div>
-                    <div hidden class="edit-info-@i.ToString()">
-                        <button type="submit" form="@i" style="border-style: none; background-color: white">
+                    <div hidden class="mt-2 edit-info-@i.ToString()">
+                        <button type="submit" form="@i" class="border-0 @SelectRowStyle(@i)" style="border-style: none;">
                             <i class="fa fa-check text-success"></i>
                         </button>
-                        <a href="#" class="text-danger edition-trigger" id="@i">
+                        <a href="#" class="text-danger edition-trigger">
                             <i class="fa fa-times" aria-hidden="true"></i>
                         </a>
                     </div>
@@ -133,7 +129,7 @@ else
                         <i class="fa fa-minus" aria-hidden="true"></i>
                     </a>
                 </td>
-                <input type="hidden" asp-for="EditExpenseViewModel.ExpenseId" value="@expense.ExpenseId"/>
+                <input type="hidden" asp-for="EditExpenseViewModel.ExpenseId" value="@expense.ExpenseId" form="@i"/>
             </tr>
             i++;
         }
