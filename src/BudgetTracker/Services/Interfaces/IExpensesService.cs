@@ -16,6 +16,5 @@ namespace BudgetTracker.Services.Interfaces
         public CreateExpenseViewModel BuildCreateExpenseViewModel();
         public ExpenseEditViewModel BuildEditExpenseViewModel();
         public void DeleteExpense(int id);
-        public Dictionary<string, string> ModelErrors { get; }
     }
 }

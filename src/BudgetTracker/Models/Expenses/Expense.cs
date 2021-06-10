@@ -17,6 +17,6 @@ namespace BudgetTracker.Models.Expenses
         
         [ForeignKey("ExpenseCategory")]
         public int ExpenseCategoryId { get; set; }
-        public ExpenseCategory ExpenseCategory { get; set; }
+        public virtual ExpenseCategory ExpenseCategory { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 using BudgetTracker.Models.ViewModels;
 using BudgetTracker.Services.Interfaces;
+using BudgetTracker.Util.Handlers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetTracker.Controllers
@@ -43,7 +44,7 @@ namespace BudgetTracker.Controllers
         public IActionResult Edit(HomeDisplayViewModel homeVm)
         {
             if (!_expensesService.EditExpense(homeVm.EditExpenseViewModel, ModelState))
-                ViewData["ModelErrors"] = _expensesService.ModelErrors;
+                TempData["ModelErrors"] =  ModelErrorsHandler.ModelStateToErrorDict(ModelState);
             
             return RedirectToAction("Index", "Home");
         }

@@ -16,14 +16,11 @@ namespace BudgetTracker.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
-        private readonly ModelValidationErrorsHandler _modelValidationHandler;
-        public Dictionary<string, string> ModelErrors => _modelValidationHandler.ModelErrors;
         
         public ExpensesService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
-            _modelValidationHandler = new ModelValidationErrorsHandler();
         }
 
         public void DeleteExpense(int id)
@@ -85,7 +82,6 @@ namespace BudgetTracker.Services
 
             if (currentExpense == null || !modelState.IsValid)
             {
-                _modelValidationHandler.ExtractValidationErrors<Expense>(modelState);
                 return false;
             }
             currentExpense = _mapper.Map(expenseEditVm, currentExpense);

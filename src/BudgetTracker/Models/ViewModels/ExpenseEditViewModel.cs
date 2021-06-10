@@ -11,7 +11,7 @@ namespace BudgetTracker.Models.ViewModels
         public int ExpenseId { get; set; }
         public Recurrence Recurrence { get; set; }
         
-        [Range(1.0, Double.MaxValue)]
+        [Range(1.0, Double.MaxValue, ErrorMessage = "Amount paid can't be zero")]
         public decimal? AmountPaid { get; set; }
         
         public DateTime? PaidAt { get; set; }
