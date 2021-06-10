@@ -28,8 +28,7 @@ namespace BudgetTracker.Controllers
                         
             return View(new HomeDisplayViewModel
             {
-                Expenses = _expensesService.GetCurrentMonthExpenses(),
-                EditExpenseViewModel = _expensesService.BuildEditExpenseViewModel()
+                ExpenseTableViewModel = _expensesService.BuildExpenseTableViewModel()
             });
         }
 

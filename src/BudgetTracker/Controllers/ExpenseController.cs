@@ -41,9 +41,9 @@ namespace BudgetTracker.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(HomeDisplayViewModel homeVm)
+        public IActionResult Edit(ExpenseTableViewModel homeVm)
         {
-            if (!_expensesService.EditExpense(homeVm.EditExpenseViewModel, ModelState))
+            if (!_expensesService.EditExpense(homeVm, ModelState))
                 TempData["ModelErrors"] =  ModelErrorsHandler.ModelStateToErrorDict(ModelState);
             
             return RedirectToAction("Index", "Home");

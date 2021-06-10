@@ -8,8 +8,10 @@ namespace BudgetTracker.Util.MapProfiles
     {
         public ExpenseProfile()
         {
-            CreateMap<ExpenseEditViewModel, Expense>()
-                .ForMember(e => e.PaidAt, o => o.Condition(vm => vm.PaidAt != default))
+            CreateMap<ExpenseTableViewModel, Expense>()
+                .ForMember(
+                    e => e.PaidAt, 
+                    o => o.MapFrom((src, dest, tp) => src.PaidAt ?? dest.PaidAt))
                 .ForAllMembers(o => o.Condition((src, dest, sourceMember) => sourceMember != null));
 
             CreateMap<CreateExpenseViewModel, Expense>();

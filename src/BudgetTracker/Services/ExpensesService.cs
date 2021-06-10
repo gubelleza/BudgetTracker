@@ -6,7 +6,6 @@ using BudgetTracker.Data;
 using BudgetTracker.Models.Expenses;
 using BudgetTracker.Models.ViewModels;
 using BudgetTracker.Services.Interfaces;
-using BudgetTracker.Util;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,12 +31,13 @@ namespace BudgetTracker.Services
             _context.SaveChanges();
         }
 
-        public ExpenseEditViewModel BuildEditExpenseViewModel()
+        public ExpenseTableViewModel BuildExpenseTableViewModel()
         {
-            return new ExpenseEditViewModel
+            return new ExpenseTableViewModel
             {
                 BudgetMembersNames = GetBudgetMembersNames(),
-                CurrentCategories = GetExpenseCategories()
+                CurrentCategories = GetExpenseCategories(),
+                Expenses = GetCurrentMonthExpenses()
             };        
         }
         
@@ -76,7 +76,7 @@ namespace BudgetTracker.Services
             return expenses.ToList();
         }
 
-        public bool EditExpense(ExpenseEditViewModel expenseEditVm, ModelStateDictionary modelState)
+        public bool EditExpense(ExpenseTableViewModel expenseEditVm, ModelStateDictionary modelState)
         {
             var currentExpense = _context.Expenses.FirstOrDefault(e => e.ExpenseId == expenseEditVm.ExpenseId);
 
