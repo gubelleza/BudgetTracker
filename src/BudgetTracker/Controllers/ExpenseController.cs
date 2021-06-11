@@ -28,7 +28,7 @@ namespace BudgetTracker.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            return View("Create");
+            return View("Create", _expensesService.BuildCreateExpenseViewModel());
         }
 
         [HttpGet]

@@ -1,0 +1,13 @@
+@model AddCategoriesViewModel
+
+<div>
+    <form method="post" asp-action="">
+        @for (int i = 0; i < @Model.Categories.Count; i++)
+        {
+            <div class="input-group">
+                <label for="category-name-@i.ToString()">Category Name</label>
+                <input id="category-name-@i.ToString()" type="text" asp-for="Categories[i].CategoryName"/>
+            </div>
+        }
+    </form>
+</div>

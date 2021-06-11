@@ -35,7 +35,7 @@
                        step="any"
                        asp-for="AmountPaid"
                        value="@expense.AmountPaid"
-                       placeholder="@expense.AmountPaid.ToString("C")"
+                       placeholder='@expense.AmountPaid.ToString("C")'
                        class="form-control"
                        form="@i"/>
             </div>
@@ -63,7 +63,7 @@
                        type="date"
                        asp-for="PaidAt"
                        class="form-control"
-                       value="@expense.PaidAt"
+                       value='@expense.PaidAt.ToString("yyyy-MM-dd")'
                        form="@i"
             >
             </div>
@@ -93,7 +93,7 @@
                 <button type="submit" form="@i" class="border-0 @SelectRowStyle(@i)" style="border-style: none;">
                     <i class="fa fa-check text-success"></i>
                 </button>
-                <a href="#" class="text-danger edition-trigger">
+                <a href="#" class="text-danger edition-trigger" id="@i">
                     <i class="fa fa-times" aria-hidden="true"></i>
                 </a>
             </div>
