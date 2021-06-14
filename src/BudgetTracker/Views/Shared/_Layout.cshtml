@@ -7,7 +7,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
           rel="stylesheet" />
     <link href="~/lib/font-awesome/css/all.min.css" rel="stylesheet" />
-
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -32,9 +32,9 @@
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item text-dark" asp-controller="Expense" asp-action="Create">Add Expense</a>
-                            <a class="dropdown-item" href="#">Add Category</a>
                             <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">Something else here</a>
+                            <a class="dropdown-item" asp-controller="Expense" asp-action="AddCategory">Add Categories</a>
+                            <a class="dropdown-item" asp-controller="Expense" asp-action="EditCategories">Edit Categories</a>
                         </div>
                     </li>
                 </ul>

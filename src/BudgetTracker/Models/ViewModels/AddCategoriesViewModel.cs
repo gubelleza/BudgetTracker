@@ -3,8 +3,8 @@ using BudgetTracker.Models.Expenses;
 
 namespace BudgetTracker.Models.ViewModels
 {
-    public class AddCategoriesViewModel
+    public class AddCategoriesViewModel<TCategory>
     {
-        public List<ExpenseCategory> Categories { get; set; }
+        public List<TCategory> Categories { get; set; }
     }
 }

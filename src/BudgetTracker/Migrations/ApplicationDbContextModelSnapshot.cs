@@ -34,9 +34,6 @@ namespace BudgetTracker.Migrations
                     b.Property<DateTime>("PaidAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Recurrence")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("ExpenseId");
 
                     b.HasIndex("ExpenseCategoryId");
@@ -52,6 +49,9 @@ namespace BudgetTracker.Migrations
 
                     b.Property<string>("CategoryName")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Recurrence")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("CategoryId");
 

@@ -10,7 +10,6 @@ namespace BudgetTracker.Models.Expenses
     {
         [Key]
         public long ExpenseId { get; set; }
-        public Recurrence Recurrence { get; set; }
         public decimal AmountPaid { get; set; }
         public DateTime PaidAt { get; set; }
         public string BudgetMemberName { get; set; }

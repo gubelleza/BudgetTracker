@@ -16,5 +16,9 @@ namespace BudgetTracker.Services.Interfaces
         public CreateExpenseViewModel BuildCreateExpenseViewModel();
         public ExpenseTableViewModel BuildExpenseTableViewModel();
         public void DeleteExpense(int id);
+        public AddCategoriesViewModel<ExpenseCategory> BuildAddCategoriesViewModel(int emptyCategoriesQuantity);
+        public bool AddCategories(List<ExpenseCategory> expenseCategories);
+        public EditCategoriesViewModel BuildEditCategoriesViewModel();
+        public bool EditCategories(EditCategoriesViewModel editCategoriesVm);
     }
 }

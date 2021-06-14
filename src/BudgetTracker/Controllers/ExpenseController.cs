@@ -1,3 +1,4 @@
+using BudgetTracker.Models.Expenses;
 using BudgetTracker.Models.ViewModels;
 using BudgetTracker.Services.Interfaces;
 using BudgetTracker.Util.Handlers;
@@ -46,6 +47,32 @@ namespace BudgetTracker.Controllers
             if (!_expensesService.EditExpense(homeVm, ModelState))
                 TempData["ModelErrors"] =  ModelErrorsHandler.ModelStateToErrorDict(ModelState);
             
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult AddCategory()
+        {
+            return View(_expensesService.BuildAddCategoriesViewModel(5));
+        }
+
+        [HttpPost]
+        public IActionResult SubmitAddCategory(AddCategoriesViewModel<ExpenseCategory> addCategoriesVm)
+        {
+            _expensesService.AddCategories(addCategoriesVm.Categories);
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult EditCategories()
+        {
+            return View(_expensesService.BuildEditCategoriesViewModel());
+        }
+
+        [HttpPost]
+        public IActionResult SubmitEditCategories(EditCategoriesViewModel editCategoriesVm)
+        {
+            _expensesService.EditCategories(editCategoriesVm);
             return RedirectToAction("Index", "Home");
         }
     }

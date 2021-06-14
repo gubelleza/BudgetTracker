@@ -23,18 +23,37 @@
             }
         } 
     }
-
     toggleElements(displayElements);
     toggleElements(editionElements);
 }
 
-let editionTriggers = document.getElementsByClassName("edition-trigger");
+function disableInputs(index) {
+    let inputs = document.getElementsByClassName("input-row-" + index);
+    for (i = 0; i < inputs.length; i++)
+    {
+        let element = inputs[i];
+        if (element.disabled)
+        {
+            element.removeAttribute("disabled");
+        } else {
+            element.setAttribute("disabled", true);
+        }
+    }
+}
 
+let checks = document.getElementsByClassName("form-check");
+for (i = 0; i < checks.length; i++) {
+    let element = checks[i];
+    element.addEventListener("click", () => {
+        let checkIndex = element.id;
+        disableInputs(checkIndex);
+    });
+}
+
+let editionTriggers = document.getElementsByClassName("edition-trigger");
 for (i = 0; i < editionTriggers.length; i++) {
     let element = editionTriggers.item(i);
-
-    console.log("Item: " + element.innerHTML);
-
+    
     element.addEventListener("click", () => {
         let triggerIndex = element.id;
         toggleEdition(triggerIndex);

@@ -41,12 +41,14 @@
             </div>
         </td>
         <td id="recurrence-row">
-            <div class="display-info-@i.ToString()">@expense.Recurrence</div>
+            <div class="display-info-@i.ToString()">@expense.ExpenseCategory.Recurrence</div>
             <div hidden class="edit-info-@i.ToString()">
                 <select id="select-recurrence"
                         asp-for="Recurrence"
-                        value=">@expense.Recurrence"
+                        value=">@expense.ExpenseCategory.Recurrence"
                         class="custom-select"
+                        onchange="return alert(
+                            'Changing the recurrence will impact all other expenses in the same category. Are ou sure?')"
                         form="@i"
                 >
                     @foreach (var item in Enum.GetValues<Recurrence>())

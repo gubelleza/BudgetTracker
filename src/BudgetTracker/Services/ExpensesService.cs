@@ -40,6 +40,17 @@ namespace BudgetTracker.Services
                 Expenses = GetCurrentMonthExpenses()
             };        
         }
+
+        public EditCategoriesViewModel BuildEditCategoriesViewModel()
+        {
+            var categories = _context.ExpenseCategories.ToList();
+            var editVm = new EditCategoriesViewModel
+            {
+                Categories = categories,
+            };
+            editVm.PopulateCategoriesToDelete(categories.Count);
+            return editVm;
+        }
         
         public CreateExpenseViewModel BuildCreateExpenseViewModel()
         {
@@ -47,6 +58,19 @@ namespace BudgetTracker.Services
             {
                 BudgetMembersNames = GetBudgetMembersNames(),
                 CurrentCategories = GetExpenseCategories()
+            };
+        }
+
+        public AddCategoriesViewModel<ExpenseCategory> BuildAddCategoriesViewModel(int emptyCategoriesQuantity)
+        {
+            var categories = new List<ExpenseCategory>();
+
+            for (var i = 0; i < emptyCategoriesQuantity; i++)
+                categories.Add(new ExpenseCategory());
+
+            return new AddCategoriesViewModel<ExpenseCategory>
+            {
+                Categories = categories
             };
         }
         
@@ -61,6 +85,13 @@ namespace BudgetTracker.Services
                 .ExpenseCategories
                 .OrderBy(ec => ec.CategoryName)
                 .ToList();
+        }
+
+        public bool AddCategories(List<ExpenseCategory> expenseCategories)
+        {
+            _context.AddRange(expenseCategories);
+            _context.SaveChanges();
+            return true;
         }
         
         public List<IGrouping<string, Expense>> GetCurrentMonthExpenses()
@@ -99,6 +130,54 @@ namespace BudgetTracker.Services
                 var expense = _mapper.Map<Expense>(expenseInputVm);
                 _context.Expenses.Add(expense);
                 _context.SaveChanges();
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool EditCategories(EditCategoriesViewModel editCategoriesVm)
+        {
+            if (DeleteCategoriesIfAny(editCategoriesVm) || UpdateCategoriesIfAny(editCategoriesVm))
+            {
+                _context.SaveChanges();
+                return true;
+            }
+            return true;
+        }
+
+        private bool UpdateCategoriesIfAny(EditCategoriesViewModel editCategoriesVm)
+        {
+            var categoriesToUpdate = editCategoriesVm
+                .Categories
+                .Where(c => !string.IsNullOrEmpty(c.CategoryName) 
+                            && editCategoriesVm.DeleteCategories.Any(dc => 
+                                dc.Id == c.CategoryId && !dc.Deleted))
+                .ToList();
+            
+            if (categoriesToUpdate.Any())
+            {
+                _context.ExpenseCategories.UpdateRange(categoriesToUpdate);
+                return true;
+            }
+
+            return false;
+        }
+        
+        private bool DeleteCategoriesIfAny(EditCategoriesViewModel editCategoriesVm)
+        {
+            var deleteIds = editCategoriesVm
+                .DeleteCategories
+                .Where(c => c.Deleted)
+                .Select(c => c.Id)
+                .ToList();
+            
+            if (deleteIds.Any())
+            {
+                var categoriesToDelete = editCategoriesVm
+                    .Categories
+                    .Where(c => deleteIds.Contains(c.CategoryId));
+                _context.ExpenseCategories.RemoveRange(categoriesToDelete);
                 return true;
             }
 
