@@ -5,6 +5,7 @@
         <h3>Edit Categories</h3>
     </div>
     <div class="shadow p-4 rounded-lg w-75 mt-2">
+
         <form method="post" asp-action="SubmitEditCategories">
             <table class="table">
                 <thead class="table-head text-center">
@@ -50,7 +51,7 @@
                                        type="checkbox" class="form-check"
                                        asp-for="DeleteCategories[i].Deleted"
                                        value="true"/>
-                                  <input type="hidden"
+                                <input type="hidden"
                                        asp-for="DeleteCategories[i].Id"
                                        value="@Model.Categories[i].CategoryId"/>
                             </div>
@@ -59,8 +60,14 @@
                 }
                 </tbody>
             </table>
+            <div class="alert alert-danger" role="alert" id="delete-alert" hidden>
+                Deleting a Category will delete any records associated with it
+            </div>
             <div class="d-flex justify-content-center">
-                <input class="btn btn-success" type="submit" value="Confirm"/>
+                <input id="confirm-edit"
+                       class="btn btn-success"
+                       type="submit"
+                       value="Confirm"/>
             </div>
         </form>
     </div>

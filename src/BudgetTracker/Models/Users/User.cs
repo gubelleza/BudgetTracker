@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BudgetTracker.Models.Users
 {
     [Index(nameof(User.Username), IsUnique = true)]
+    [Index(nameof(User.Email), IsUnique = true)]
     public class User
     {
         [Key]

@@ -89,7 +89,7 @@ namespace BudgetTracker.Services
 
         public bool AddCategories(List<ExpenseCategory> expenseCategories)
         {
-            _context.AddRange(expenseCategories);
+            _context.AddRange(expenseCategories.Where(c => string.IsNullOrEmpty(c.CategoryName)));
             _context.SaveChanges();
             return true;
         }

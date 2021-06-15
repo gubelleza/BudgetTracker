@@ -33,6 +33,7 @@ namespace BudgetTracker
                 options.UseSqlite("Data Source=./Data/budget_tracker.sqlite");
             });
             services.AddScoped<IExpensesService, ExpensesService>();
+            services.AddScoped<IUsersService, UsersService>();
             services.AddAutoMapper(typeof(Startup));
         }
 
