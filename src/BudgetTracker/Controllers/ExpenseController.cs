@@ -18,18 +18,18 @@ namespace BudgetTracker.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View(_expensesService.BuildCreateExpenseViewModel());
+            return View(_expensesService.BuildCreateExpenseViewModel(HttpContext.Session));
         }
 
         [HttpPost]
         public IActionResult SubmitCreate(CreateExpenseViewModel createExpenseVm)
         {
-            if (_expensesService.AddExpense(createExpenseVm, ModelState))
+            if (_expensesService.AddExpense(createExpenseVm, ModelState, HttpContext.Session))
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            return View("Create", _expensesService.BuildCreateExpenseViewModel());
+            return View("Create", _expensesService.BuildCreateExpenseViewModel(HttpContext.Session));
         }
 
         [HttpGet]
@@ -66,7 +66,7 @@ namespace BudgetTracker.Controllers
         [HttpGet]
         public IActionResult EditCategories()
         {
-            return View(_expensesService.BuildEditCategoriesViewModel());
+            return View(_expensesService.BuildEditCategoriesViewModel(HttpContext.Session));
         }
 
         [HttpPost]

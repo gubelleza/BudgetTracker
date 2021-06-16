@@ -36,6 +36,7 @@ namespace BudgetTracker
 
             services.AddScoped<IExpensesService, ExpensesService>();
             services.AddScoped<IUsersService, UsersService>();
+            services.AddScoped<IBudgetService, BudgetService>();
 
             services.AddAutoMapper(typeof(Startup));
 

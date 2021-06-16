@@ -6,6 +6,8 @@ using BudgetTracker.Data;
 using BudgetTracker.Models.Expenses;
 using BudgetTracker.Models.ViewModels;
 using BudgetTracker.Services.Interfaces;
+using BudgetTracker.Util.Extensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 
@@ -31,19 +33,20 @@ namespace BudgetTracker.Services
             _context.SaveChanges();
         }
 
-        public ExpenseTableViewModel BuildExpenseTableViewModel()
+        public ExpenseTableViewModel BuildExpenseTableViewModel(Guid budgetId)
         {
             return new ExpenseTableViewModel
             {
-                BudgetMembersNames = GetBudgetMembersNames(),
-                CurrentCategories = GetExpenseCategories(),
-                Expenses = GetCurrentMonthExpenses()
+                BudgetMembersNames = GetBudgetMembersNames(budgetId),
+                CurrentCategories = GetExpenseCategories(budgetId),
+                Expenses = GetCurrentMonthExpenses(budgetId)
             };        
         }
 
-        public EditCategoriesViewModel BuildEditCategoriesViewModel()
+        public EditCategoriesViewModel BuildEditCategoriesViewModel(ISession session)
         {
-            var categories = _context.ExpenseCategories.ToList();
+            var budgetId = session.GetCurrentBudgetId();
+            var categories = _context.ExpenseCategories.Where(c => c.BudgetId == budgetId).ToList();
             var editVm = new EditCategoriesViewModel
             {
                 Categories = categories,
@@ -52,12 +55,13 @@ namespace BudgetTracker.Services
             return editVm;
         }
         
-        public CreateExpenseViewModel BuildCreateExpenseViewModel()
+        public CreateExpenseViewModel BuildCreateExpenseViewModel(ISession session)
         {
+            var budgetId = session.GetCurrentBudgetId();
             return new CreateExpenseViewModel
             {
-                BudgetMembersNames = GetBudgetMembersNames(),
-                CurrentCategories = GetExpenseCategories()
+                BudgetMembersNames = GetBudgetMembersNames(budgetId),
+                CurrentCategories = GetExpenseCategories(budgetId)
             };
         }
 
@@ -74,15 +78,19 @@ namespace BudgetTracker.Services
             };
         }
         
-        public List<string> GetBudgetMembersNames()
+        public List<string> GetBudgetMembersNames(Guid budgetId)
         {
-            return _context.Users.Select(u => u.Username).ToList();
+            return _context.BudgetMembers
+                .Where(m => m.BudgetId == budgetId)
+                .Select(m => m.User.Username)
+                .ToList();
         }
         
-        public List<ExpenseCategory> GetExpenseCategories()
+        public List<ExpenseCategory> GetExpenseCategories(Guid budgetId)
         {
             return _context
                 .ExpenseCategories
+                .Where(c => c.BudgetId == budgetId)
                 .OrderBy(ec => ec.CategoryName)
                 .ToList();
         }
@@ -94,11 +102,11 @@ namespace BudgetTracker.Services
             return true;
         }
         
-        public List<IGrouping<string, Expense>> GetCurrentMonthExpenses()
+        public List<IGrouping<string, Expense>> GetCurrentMonthExpenses(Guid budgetId)
         {
             var expenses = _context
                 .Expenses
-                .Where(e => e.PaidAt.Month == DateTime.Now.Month)
+                .Where(e => e.PaidAt.Month == DateTime.Now.Month && e.BudgetId == budgetId)
                 .Include(e => e.ExpenseCategory)
                 .OrderBy(e => e.PaidAt)
                 .ToList()
@@ -123,11 +131,12 @@ namespace BudgetTracker.Services
             return true;
         }
 
-        public bool AddExpense(CreateExpenseViewModel expenseInputVm, ModelStateDictionary modelState)
+        public bool AddExpense(CreateExpenseViewModel expenseInputVm, ModelStateDictionary modelState, ISession session)
         {
             if (modelState.IsValid)
             {
                 var expense = _mapper.Map<Expense>(expenseInputVm);
+                expense.BudgetId = session.GetCurrentBudgetId();
                 _context.Expenses.Add(expense);
                 _context.SaveChanges();
                 return true;

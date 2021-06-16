@@ -1,0 +1,46 @@
+@model HomeDisplayViewModel
+
+@{ 
+    ViewData["Title"] = "Home Page";
+}
+
+@if (!Model.ExpenseTableViewModel.HasExpenses)
+{
+    <div>There aren't any expenses to show for this month @DateTime.Now.ToString("MM/yyyy")</div> 
+}
+else
+{
+    @if(!@ViewData.ModelState.IsValid)
+    {
+        <div asp-validation-summary="All" 
+             role="alert">
+            <button type="button" 
+                    class="close" 
+                    data-dismiss="alert" 
+                    aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+    <table class="table shadow rounded-sm">
+        <thead class="table-head text-center">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Category</th>
+                <th scope="col">Amount Paid</th>
+                <th scope="col">Recurrence</th>
+                <th scope="col">Paid At</th>
+                <th scope="col">Paid By</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Remove</th>
+            </tr>
+        </thead>
+        <tbody class="text-center">
+             <partial name="Expenses/_ExpensesTablePartial" model="@Model.ExpenseTableViewModel"></partial>
+        </tbody>
+    </table>
+}
+
+
+
+

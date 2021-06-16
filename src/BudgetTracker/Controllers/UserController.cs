@@ -43,7 +43,7 @@ namespace BudgetTracker.Controllers
             return View("Login");
         }
 
-        [HttpPost]
+        [HttpGet]
         public IActionResult Logout()
         {
             _userService.Logout(HttpContext.Session);

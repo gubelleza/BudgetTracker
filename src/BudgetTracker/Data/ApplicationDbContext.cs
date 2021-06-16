@@ -1,4 +1,4 @@
-using BudgetTracker.Models.Budget;
+using BudgetTracker.Models.Budgets;
 using BudgetTracker.Models.Expenses;
 using BudgetTracker.Models.Income;
 using BudgetTracker.Models.Users;

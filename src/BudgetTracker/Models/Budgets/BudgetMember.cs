@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using BudgetTracker.Models.Users;
 
-namespace BudgetTracker.Models.Budget
+namespace BudgetTracker.Models.Budgets
 {
     public class BudgetMember
     {

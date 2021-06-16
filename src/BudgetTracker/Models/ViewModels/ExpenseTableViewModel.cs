@@ -28,6 +28,8 @@ namespace BudgetTracker.Models.ViewModels
         public DateTime? PaidAt { get; set; }
         public string BudgetMemberName { get; set; }
         public int? ExpenseCategoryId { get; set; }
+        
+        public Guid BudgetId { get; set; }
         #endregion
         
         #region ExpenseFormAttributes

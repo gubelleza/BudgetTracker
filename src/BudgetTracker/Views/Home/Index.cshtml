@@ -1,47 +1,29 @@
-﻿@model HomeDisplayViewModel
+﻿@model UserBudgetsViewModel
 
-@{ 
-    ViewData["Title"] = "Home Page";
-}
-
-@if (!Model.ExpenseTableViewModel.HasExpenses)
+@if (!Context.Session.TryGetUserId(out _))
 {
-    <div>There aren't any expenses to show for this month @DateTime.Now.ToString("MM/yyyy")</div> 
+    <div>Sign in or Sign up to start creating your budgets!</div>
 }
 else
 {
-    @if(!@ViewData.ModelState.IsValid)
+    @if (Model.Budgets.Any())
     {
-        <div asp-validation-summary="All" 
-             class="alert alert-danger alert-dismissible fade show pb-0" 
-             role="alert">
-            <button type="button" 
-                    class="close" 
-                    data-dismiss="alert" 
-                    aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+        @foreach (var budget in Model.Budgets)
+        {
+            <div>
+                <a asp-controller="Budget" asp-action="Index" asp-route-id="@budget.BudgetId">@budget.Name</a>
+                <button class="btn btn-outline-danger">Delete</button>
+            </div>
+        }
     }
-    <table class="table shadow rounded-sm">
-        <thead class="table-head text-center">
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Category</th>
-                <th scope="col">Amount Paid</th>
-                <th scope="col">Recurrence</th>
-                <th scope="col">Paid At</th>
-                <th scope="col">Paid By</th>
-                <th scope="col">Edit</th>
-                <th scope="col">Remove</th>
-            </tr>
-        </thead>
-        <tbody class="text-center">
-             <partial name="Expenses/_ExpensesTablePartial" model="@Model.ExpenseTableViewModel"></partial>
-        </tbody>
-    </table>
+    <div>
+        <form asp-action="Create" asp-controller="Budget">
+            <p>Create a new budget to track</p>
+            <div class="form-group">
+                <label>Name:</label>
+                <input type="text" asp-for="BudgetName"/>
+                <input type="submit" class="btn btn-outline-success">
+            </div>
+        </form>
+    </div>
 }
-
-
-
-

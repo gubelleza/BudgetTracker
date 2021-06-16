@@ -16,6 +16,41 @@ namespace BudgetTracker.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.6");
 
+            modelBuilder.Entity("BudgetTracker.Models.Budgets.Budget", b =>
+                {
+                    b.Property<Guid>("BudgetId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("BudgetId");
+
+                    b.ToTable("Budgets");
+                });
+
+            modelBuilder.Entity("BudgetTracker.Models.Budgets.BudgetMember", b =>
+                {
+                    b.Property<Guid>("BudgetMemberId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("BudgetId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("BudgetMemberId");
+
+                    b.HasIndex("BudgetId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("BudgetMembers");
+                });
+
             modelBuilder.Entity("BudgetTracker.Models.Expenses.Expense", b =>
                 {
                     b.Property<long>("ExpenseId")
@@ -23,6 +58,9 @@ namespace BudgetTracker.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<decimal>("AmountPaid")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("BudgetId")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("BudgetMemberName")
@@ -36,6 +74,8 @@ namespace BudgetTracker.Migrations
 
                     b.HasKey("ExpenseId");
 
+                    b.HasIndex("BudgetId");
+
                     b.HasIndex("ExpenseCategoryId");
 
                     b.ToTable("Expenses");
@@ -47,6 +87,9 @@ namespace BudgetTracker.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<Guid>("BudgetId")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("CategoryName")
                         .HasColumnType("TEXT");
 
@@ -54,6 +97,8 @@ namespace BudgetTracker.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("CategoryId");
+
+                    b.HasIndex("BudgetId");
 
                     b.HasIndex("CategoryName")
                         .IsUnique();
@@ -137,15 +182,53 @@ namespace BudgetTracker.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("BudgetTracker.Models.Budgets.BudgetMember", b =>
+                {
+                    b.HasOne("BudgetTracker.Models.Budgets.Budget", "Budget")
+                        .WithMany()
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BudgetTracker.Models.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Budget");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("BudgetTracker.Models.Expenses.Expense", b =>
                 {
+                    b.HasOne("BudgetTracker.Models.Budgets.Budget", "Budget")
+                        .WithMany()
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("BudgetTracker.Models.Expenses.ExpenseCategory", "ExpenseCategory")
                         .WithMany()
                         .HasForeignKey("ExpenseCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Budget");
+
                     b.Navigation("ExpenseCategory");
+                });
+
+            modelBuilder.Entity("BudgetTracker.Models.Expenses.ExpenseCategory", b =>
+                {
+                    b.HasOne("BudgetTracker.Models.Budgets.Budget", "Budget")
+                        .WithMany()
+                        .HasForeignKey("BudgetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Budget");
                 });
 
             modelBuilder.Entity("BudgetTracker.Models.Income.Income", b =>
