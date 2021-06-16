@@ -6,7 +6,7 @@ namespace BudgetTracker.Models.ViewModels
     public class CreateUserViewModel
     {
         [MinLength(3)]
-        [Remote(action:"ValidateUsername", controller:"UserController", ErrorMessage = "Already taken")]
+        [Remote(action:"ValidateUsername", controller:"User", ErrorMessage = "Already taken")]
         public string Username { get; set; }
         
         [MinLength(6)]
@@ -17,7 +17,7 @@ namespace BudgetTracker.Models.ViewModels
         public string ConfirmPassword { get; set; }
         
         [EmailAddress]
-        [Remote(action:"ValidateEmail", controller:"UserController", ErrorMessage = "Already taken")]
+        [Remote(action:"ValidateEmail", controller:"User", ErrorMessage = "Already taken")]
         public string Email { get; set; }
         
         [EmailAddress]

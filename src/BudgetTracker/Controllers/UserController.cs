@@ -31,19 +31,35 @@ namespace BudgetTracker.Controllers
         [HttpGet]
         public IActionResult Login()
         {
-            return View("Create");
+            return View("Login", new LoginViewModel());
+        }
+
+        [HttpPost]
+        public IActionResult SubmitLogin(LoginViewModel loginVm)
+        {
+            if (_userService.Login(loginVm, ModelState, HttpContext.Session))
+                return RedirectToAction("Index", "Home");
+            
+            return View("Login");
+        }
+
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            _userService.Logout(HttpContext.Session);
+            return RedirectToAction("Index", "Home");
         }
 
         [AcceptVerbs("GET", "POST")]
-        public IActionResult ValidateUsername(string Username)
+        public IActionResult ValidateUsername(string username)
         {
-            return Json(_userService.UsernameExists(Username) ? "false" : "true");
+            return Json(_userService.UsernameExists(username) ? "Already taken" : "true");
         }
         
         [AcceptVerbs("GET", "POST")]
-        public IActionResult ValidateEmail(string Email)
+        public IActionResult ValidateEmail(string email)
         {
-            return Json(_userService.EmailExists(Email) ? "false" : "true");
+            return Json(_userService.EmailExists(email) ? "Already taken" : "true");
         }
     }
 }

@@ -82,9 +82,14 @@ namespace BudgetTracker.Migrations
                     b.Property<int>("Recurrence")
                         .HasColumnType("INTEGER");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("IncomeId");
 
                     b.HasIndex("IncomeCategoryId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Incomes");
                 });
@@ -123,6 +128,9 @@ namespace BudgetTracker.Migrations
 
                     b.HasKey("UserId");
 
+                    b.HasIndex("Email")
+                        .IsUnique();
+
                     b.HasIndex("Username")
                         .IsUnique();
 
@@ -148,7 +156,15 @@ namespace BudgetTracker.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BudgetTracker.Models.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("IncomeCategory");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }
