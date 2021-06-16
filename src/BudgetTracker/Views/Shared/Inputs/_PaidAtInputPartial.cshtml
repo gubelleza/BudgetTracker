@@ -1,12 +1,13 @@
-﻿@model IExpenseInputViewModel
+﻿@model CreateExpenseViewModel
 
 <div class="form-group">
     <label for="paid-at">Paid At:</label>
+    <span asp-validation-for="PaidAt" class="text-danger"></span>
     <input 
            id="paid-at" 
            type="date" 
            asp-for="PaidAt" 
            class="form-control" 
-           value="@Model.PaidAt"
+           value="@DateTime.Now.ToString("yyyy-MM-dd")"
     >
 </div>

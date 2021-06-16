@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BudgetTracker.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210602123519_Changes")]
-    partial class Changes
+    [Migration("20210606174646_AutoIncrement")]
+    partial class AutoIncrement
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

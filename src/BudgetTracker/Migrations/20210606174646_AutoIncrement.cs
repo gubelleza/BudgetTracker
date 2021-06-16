@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BudgetTracker.Migrations
 {
-    public partial class Initial : Migration
+    public partial class AutoIncrement : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -56,8 +56,8 @@ namespace BudgetTracker.Migrations
                     Recurrence = table.Column<int>(type: "INTEGER", nullable: false),
                     AmountPaid = table.Column<decimal>(type: "TEXT", nullable: false),
                     PaidAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    ExpenseCategoryId = table.Column<int>(type: "INTEGER", nullable: false),
-                    PaidBy = table.Column<Guid>(type: "TEXT", nullable: false)
+                    BudgetMemberName = table.Column<string>(type: "TEXT", nullable: true),
+                    ExpenseCategoryId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -67,12 +67,6 @@ namespace BudgetTracker.Migrations
                         column: x => x.ExpenseCategoryId,
                         principalTable: "ExpenseCategories",
                         principalColumn: "CategoryId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Expenses_Users_PaidBy",
-                        column: x => x.PaidBy,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -85,8 +79,8 @@ namespace BudgetTracker.Migrations
                     Recurrence = table.Column<int>(type: "INTEGER", nullable: false),
                     AmountReceived = table.Column<decimal>(type: "TEXT", nullable: false),
                     ReceivedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    IncomeCategoryId = table.Column<int>(type: "INTEGER", nullable: false),
-                    PaidBy = table.Column<Guid>(type: "TEXT", nullable: false)
+                    BudgetMemberName = table.Column<string>(type: "TEXT", nullable: true),
+                    IncomeCategoryId = table.Column<int>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -97,13 +91,13 @@ namespace BudgetTracker.Migrations
                         principalTable: "IncomeCategories",
                         principalColumn: "IncomeCategoryId",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Incomes_Users_PaidBy",
-                        column: x => x.PaidBy,
-                        principalTable: "Users",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExpenseCategories_CategoryName",
+                table: "ExpenseCategories",
+                column: "CategoryName",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Expenses_ExpenseCategoryId",
@@ -111,9 +105,10 @@ namespace BudgetTracker.Migrations
                 column: "ExpenseCategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Expenses_PaidBy",
-                table: "Expenses",
-                column: "PaidBy");
+                name: "IX_IncomeCategories_CategoryName",
+                table: "IncomeCategories",
+                column: "CategoryName",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Incomes_IncomeCategoryId",
@@ -121,9 +116,10 @@ namespace BudgetTracker.Migrations
                 column: "IncomeCategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Incomes_PaidBy",
-                table: "Incomes",
-                column: "PaidBy");
+                name: "IX_Users_Username",
+                table: "Users",
+                column: "Username",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -135,13 +131,13 @@ namespace BudgetTracker.Migrations
                 name: "Incomes");
 
             migrationBuilder.DropTable(
+                name: "Users");
+
+            migrationBuilder.DropTable(
                 name: "ExpenseCategories");
 
             migrationBuilder.DropTable(
                 name: "IncomeCategories");
-
-            migrationBuilder.DropTable(
-                name: "Users");
         }
     }
 }

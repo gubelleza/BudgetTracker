@@ -9,11 +9,16 @@ namespace BudgetTracker.Services.Interfaces
     public interface IExpensesService
     {
         public List<IGrouping<string, Expense>> GetCurrentMonthExpenses();
-        public bool AddExpense(Expense expense, ModelStateDictionary modelState);
+        public bool AddExpense(CreateExpenseViewModel expenseInputViewModel, ModelStateDictionary modelState);
+        public bool EditExpense(ExpenseTableViewModel expenseInput, ModelStateDictionary modelState);
         public List<ExpenseCategory> GetExpenseCategories();
         public List<string> GetBudgetMembersNames();
-        public IExpenseInputViewModel BuildExpenseInputViewModel();
+        public CreateExpenseViewModel BuildCreateExpenseViewModel();
+        public ExpenseTableViewModel BuildExpenseTableViewModel();
         public void DeleteExpense(int id);
-
+        public AddCategoriesViewModel<ExpenseCategory> BuildAddCategoriesViewModel(int emptyCategoriesQuantity);
+        public bool AddCategories(List<ExpenseCategory> expenseCategories);
+        public EditCategoriesViewModel BuildEditCategoriesViewModel();
+        public bool EditCategories(EditCategoriesViewModel editCategoriesVm);
     }
 }

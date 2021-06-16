@@ -1,0 +1,116 @@
+@model ExpenseTableViewModel
+
+@{
+    string SelectRowStyle(int index) => index % 2 == 0 ? "even-rows" : "odd-rows";
+    var i = 1;
+}
+
+@foreach (var expense in Model.Expenses.SelectMany(group => group))
+{   
+    <form id="@i.ToString()" asp-controller="Expense" asp-action="Edit">
+    </form>
+    <tr class="@SelectRowStyle(i)">
+        <th class="align-middle" scope="row">@i</th>
+        <td id="cat-name-row">
+            <div class="display-info-@i.ToString()">@expense.ExpenseCategory.CategoryName</div>
+            <div hidden class="edit-info-@i.ToString()">
+                <select id="select-category"
+                        asp-for="ExpenseCategoryId"
+                        class="custom-select"
+                        value="@expense.ExpenseCategory.CategoryId"
+                        form="@i"
+                >
+                    @foreach (var category in Model.CurrentCategories)
+                    {
+                        <option value="@category.CategoryId">@category.CategoryName</option>
+                    }
+                </select>
+            </div>
+        </td>
+        <td id="amnt-paid-row">
+            <div class="display-info-@i.ToString()">@expense.AmountPaid.ToString("C")</div>
+            <div hidden class="edit-info-@i.ToString()">
+                <input id="amount-paid"
+                       type="number"
+                       step="any"
+                       asp-for="AmountPaid"
+                       value="@expense.AmountPaid"
+                       placeholder='@expense.AmountPaid.ToString("C")'
+                       class="form-control"
+                       form="@i"/>
+            </div>
+        </td>
+        <td id="recurrence-row">
+            <div class="display-info-@i.ToString()">@expense.ExpenseCategory.Recurrence</div>
+            <div hidden class="edit-info-@i.ToString()">
+                <select id="select-recurrence"
+                        asp-for="Recurrence"
+                        value=">@expense.ExpenseCategory.Recurrence"
+                        class="custom-select"
+                        onchange="return alert(
+                            'Changing the recurrence will impact all other expenses in the same category. Are ou sure?')"
+                        form="@i"
+                >
+                    @foreach (var item in Enum.GetValues<Recurrence>())
+                    {
+                        <option value="@item">@item.ToString()</option>
+                    }
+                </select>
+            </div>
+        </td>
+        <td id="paid-at-row">
+            <div class="display-info-@i.ToString()">@expense.PaidAt.ToString("M")</div>
+            <div hidden class="edit-info-@i.ToString()">
+                <input id="paid-at"
+                       type="date"
+                       asp-for="PaidAt"
+                       class="form-control"
+                       value='@expense.PaidAt.ToString("yyyy-MM-dd")'
+                       form="@i"
+            >
+            </div>
+        </td>
+        <td id="paid-by-row">
+            <div class="display-info-@i.ToString()">@expense.BudgetMemberName</div>
+            <div hidden class="edit-info-@i.ToString()">
+                <select id="select-paid-by"
+                        asp-for="BudgetMemberName"
+                        value="@expense.BudgetMemberName"
+                        class="custom-select"
+                        form="@i">
+                    @foreach (var name in Model.BudgetMembersNames)
+                    {
+                        <option value="@name">@name</option>
+                    }
+                </select>
+            </div>
+        </td>
+        <td>     
+            <div class="display-info-@i.ToString()">
+                <a href="#" class="text-success edition-trigger" id="@i">
+                    <i class="fa fa-edit" aria-hidden="true"></i>
+                </a>
+            </div>
+            <div hidden class="mt-2 edit-info-@i.ToString()">
+                <button type="submit" form="@i" class="border-0 @SelectRowStyle(@i)" style="border-style: none;">
+                    <i class="fa fa-check text-success"></i>
+                </button>
+                <a href="#" class="text-danger edition-trigger" id="@i">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </a>
+            </div>
+        </td>
+        <td>
+            <a asp-action="Delete" 
+               asp-controller="Expense" 
+               asp-route-id="@expense.ExpenseId" 
+               class="text-danger"
+               onclick="return confirm('Delete this row?')"
+            >
+                <i class="fa fa-minus" aria-hidden="true"></i>
+            </a>
+        </td>
+        <input type="hidden" asp-for="ExpenseId" value="@expense.ExpenseId" form="@i"/>
+    </tr>
+    i++;
+}

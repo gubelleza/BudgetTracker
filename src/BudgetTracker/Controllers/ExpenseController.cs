@@ -1,5 +1,7 @@
+using BudgetTracker.Models.Expenses;
 using BudgetTracker.Models.ViewModels;
 using BudgetTracker.Services.Interfaces;
+using BudgetTracker.Util.Handlers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetTracker.Controllers
@@ -16,18 +18,18 @@ namespace BudgetTracker.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View(_expensesService.BuildExpenseInputViewModel());
+            return View(_expensesService.BuildCreateExpenseViewModel());
         }
 
         [HttpPost]
-        public IActionResult SubmitCreate(IExpenseInputViewModel createExpenseVm)
+        public IActionResult SubmitCreate(CreateExpenseViewModel createExpenseVm)
         {
-            if (_expensesService.AddExpense(createExpenseVm.ToExpense, ModelState))
+            if (_expensesService.AddExpense(createExpenseVm, ModelState))
             {
                 return RedirectToAction("Index", "Home");
             }
 
-            return View("Create");
+            return View("Create", _expensesService.BuildCreateExpenseViewModel());
         }
 
         [HttpGet]
@@ -40,8 +42,37 @@ namespace BudgetTracker.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(string id)
+        public IActionResult Edit(ExpenseTableViewModel homeVm)
         {
+            if (!_expensesService.EditExpense(homeVm, ModelState))
+                TempData["ModelErrors"] =  ModelErrorsHandler.ModelStateToErrorDict(ModelState);
+            
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult AddCategory()
+        {
+            return View(_expensesService.BuildAddCategoriesViewModel(5));
+        }
+
+        [HttpPost]
+        public IActionResult SubmitAddCategory(AddCategoriesViewModel<ExpenseCategory> addCategoriesVm)
+        {
+            _expensesService.AddCategories(addCategoriesVm.Categories);
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult EditCategories()
+        {
+            return View(_expensesService.BuildEditCategoriesViewModel());
+        }
+
+        [HttpPost]
+        public IActionResult SubmitEditCategories(EditCategoriesViewModel editCategoriesVm)
+        {
+            _expensesService.EditCategories(editCategoriesVm);
             return RedirectToAction("Index", "Home");
         }
     }

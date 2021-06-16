@@ -1,7 +1,8 @@
-﻿@model IExpenseInputViewModel
+﻿@model CreateExpenseViewModel
 
 <div class="form-group">
     <label for="amount-paid">Amount Paid:</label>
+    <span asp-validation-for="AmountPaid" class="text-danger"></span>
     <input 
            id="amount-paid" 
            type="number" 

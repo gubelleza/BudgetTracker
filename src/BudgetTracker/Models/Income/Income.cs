@@ -19,5 +19,9 @@ namespace BudgetTracker.Models.Income
         [ForeignKey("IncomeCategory")]
         public int IncomeCategoryId { get; set; }
         public IncomeCategory IncomeCategory { get; set; }
+        
+        [ForeignKey("User")]
+        public Guid UserId { get; set; }
+        public User User { get; set; }
     }
 }
