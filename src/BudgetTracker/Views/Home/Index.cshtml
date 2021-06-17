@@ -11,7 +11,7 @@ else
         @foreach (var budget in Model.Budgets)
         {
             <div>
-                <a asp-controller="Budget" asp-action="Index" asp-route-id="@budget.BudgetId">@budget.Name</a>
+                <a asp-controller="Budget" asp-action="Display" asp-route-id="@budget.BudgetId">@budget.Name</a>
                 <button class="btn btn-outline-danger">Delete</button>
             </div>
         }

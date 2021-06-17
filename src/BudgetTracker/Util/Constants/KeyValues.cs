@@ -2,10 +2,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BudgetTracker.Util.Constants
 {
-    public static class NavOptions
+    public static class ViewDataKeys
     {
-        public const string KEY = "NAV_OPTIONS";
-        public const string BUDGET = "BUDGET";
+        public const string BUDGET_ID = "BUDGET_ID";
     }
-    
 }

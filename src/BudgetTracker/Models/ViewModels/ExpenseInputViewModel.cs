@@ -19,8 +19,8 @@ namespace BudgetTracker.Models.ViewModels
         [Required]
         public DateTime? PaidAt { get; set; }
         
-        [Required]
-        [MinLength(3)]
+        public Guid BudgetId { get; set; }
+        
         public string BudgetMemberName { get; set; }
         
         public int? ExpenseCategoryId { get; set; }

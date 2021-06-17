@@ -1,3 +1,4 @@
+using System;
 using BudgetTracker.Models.Expenses;
 using BudgetTracker.Models.ViewModels;
 using BudgetTracker.Services.Interfaces;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetTracker.Controllers
 {
+    [Route("expense")]
     public class ExpenseController : Controller
     {
         private readonly IExpensesService _expensesService;
@@ -15,21 +17,25 @@ namespace BudgetTracker.Controllers
             _expensesService = expensesService;
         }
         
-        [HttpGet]
-        public IActionResult Create()
+        [HttpGet("create/id={budgetId:Guid}")]
+        public IActionResult Create(Guid budgetId)
         {
-            return View(_expensesService.BuildCreateExpenseViewModel(HttpContext.Session));
+            if (!IsValidBudgetId(budgetId))
+                return RedirectToAction("Index", "Home");
+            
+            return View(_expensesService.BuildCreateExpenseViewModel(budgetId));
         }
 
         [HttpPost]
         public IActionResult SubmitCreate(CreateExpenseViewModel createExpenseVm)
         {
-            if (_expensesService.AddExpense(createExpenseVm, ModelState, HttpContext.Session))
+            if (_expensesService.AddExpense(createExpenseVm, ModelState))
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Display", "Budget");
             }
 
-            return View("Create", _expensesService.BuildCreateExpenseViewModel(HttpContext.Session));
+            return View("Create", 
+                _expensesService.BuildCreateExpenseViewModel(createExpenseVm.BudgetId));
         }
 
         [HttpGet]
@@ -38,7 +44,7 @@ namespace BudgetTracker.Controllers
             if (int.TryParse(id, out var intId))
                 _expensesService.DeleteExpense(intId); 
 
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Display", "Budget");
         }
 
         [HttpPost]
@@ -47,33 +53,38 @@ namespace BudgetTracker.Controllers
             if (!_expensesService.EditExpense(homeVm, ModelState))
                 TempData["ModelErrors"] =  ModelErrorsHandler.ModelStateToErrorDict(ModelState);
             
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Display", "Budget");
         }
-
-        [HttpGet]
-        public IActionResult AddCategory()
+        
+        [HttpGet("add-categories/id={budgetId:Guid}")]
+        public IActionResult AddCategory(Guid budgetId)
         {
-            return View(_expensesService.BuildAddCategoriesViewModel(5));
+            return View(_expensesService.BuildAddCategoriesViewModel(3, budgetId));
         }
 
         [HttpPost]
         public IActionResult SubmitAddCategory(AddCategoriesViewModel<ExpenseCategory> addCategoriesVm)
         {
             _expensesService.AddCategories(addCategoriesVm.Categories);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Display", "Budget");
         }
 
-        [HttpGet]
-        public IActionResult EditCategories()
+        [HttpGet("edit-categories/id={budgetId:Guid}")]
+        public IActionResult EditCategories(Guid budgetId)
         {
-            return View(_expensesService.BuildEditCategoriesViewModel(HttpContext.Session));
+            if (!IsValidBudgetId(budgetId))
+                return RedirectToAction("Index", "Home");
+            
+            return View(_expensesService.BuildEditCategoriesViewModel(budgetId));
         }
 
         [HttpPost]
         public IActionResult SubmitEditCategories(EditCategoriesViewModel editCategoriesVm)
         {
             _expensesService.EditCategories(editCategoriesVm);
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Display", "Budget");
         }
+
+        private static bool IsValidBudgetId(Guid budgetId) => budgetId != default;
     }
 }

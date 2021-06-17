@@ -43,9 +43,8 @@ namespace BudgetTracker.Services
             };        
         }
 
-        public EditCategoriesViewModel BuildEditCategoriesViewModel(ISession session)
+        public EditCategoriesViewModel BuildEditCategoriesViewModel(Guid budgetId)
         {
-            var budgetId = session.GetCurrentBudgetId();
             var categories = _context.ExpenseCategories.Where(c => c.BudgetId == budgetId).ToList();
             var editVm = new EditCategoriesViewModel
             {
@@ -55,22 +54,23 @@ namespace BudgetTracker.Services
             return editVm;
         }
         
-        public CreateExpenseViewModel BuildCreateExpenseViewModel(ISession session)
+        public CreateExpenseViewModel BuildCreateExpenseViewModel(Guid budgetId)
         {
-            var budgetId = session.GetCurrentBudgetId();
             return new CreateExpenseViewModel
             {
                 BudgetMembersNames = GetBudgetMembersNames(budgetId),
-                CurrentCategories = GetExpenseCategories(budgetId)
+                CurrentCategories = GetExpenseCategories(budgetId),
+                BudgetId = budgetId
             };
         }
 
-        public AddCategoriesViewModel<ExpenseCategory> BuildAddCategoriesViewModel(int emptyCategoriesQuantity)
+        public AddCategoriesViewModel<ExpenseCategory> BuildAddCategoriesViewModel(
+            int emptyCategoriesQuantity, Guid budgetId)
         {
             var categories = new List<ExpenseCategory>();
 
             for (var i = 0; i < emptyCategoriesQuantity; i++)
-                categories.Add(new ExpenseCategory());
+                categories.Add(new ExpenseCategory{ BudgetId = budgetId});
 
             return new AddCategoriesViewModel<ExpenseCategory>
             {
@@ -97,8 +97,9 @@ namespace BudgetTracker.Services
 
         public bool AddCategories(List<ExpenseCategory> expenseCategories)
         {
-            _context.AddRange(expenseCategories.Where(c => string.IsNullOrEmpty(c.CategoryName)));
+            _context.AddRange(expenseCategories.Where(c => !string.IsNullOrEmpty(c.CategoryName)));
             _context.SaveChanges();
+
             return true;
         }
         
@@ -131,12 +132,11 @@ namespace BudgetTracker.Services
             return true;
         }
 
-        public bool AddExpense(CreateExpenseViewModel expenseInputVm, ModelStateDictionary modelState, ISession session)
+        public bool AddExpense(CreateExpenseViewModel expenseInputVm, ModelStateDictionary modelState)
         {
             if (modelState.IsValid)
             {
                 var expense = _mapper.Map<Expense>(expenseInputVm);
-                expense.BudgetId = session.GetCurrentBudgetId();
                 _context.Expenses.Add(expense);
                 _context.SaveChanges();
                 return true;

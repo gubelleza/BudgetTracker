@@ -20,15 +20,14 @@ namespace BudgetTracker.Controllers
             _expensesService = expensesService;
         }
 
-        [HttpGet("{id:Guid}")]
-        public IActionResult Index(Guid id)
+        [HttpGet("budget/display/id={id:Guid}")]
+        public IActionResult Display(Guid id)
         {
             if (TempData.TryGetValue("ModelErrors", out var errors) && 
                 errors is Dictionary<string, string> errorsDict)            
                 ModelErrorsHandler.PopulateModelState(ModelState, errorsDict);
 
-            ViewData[NavOptions.KEY] = NavOptions.BUDGET;
-            HttpContext.Session.SetCurrentBudgetId(id);
+            ViewData[ViewDataKeys.BUDGET_ID] = id;
             return View(new HomeDisplayViewModel
             {
                 ExpenseTableViewModel = _expensesService.BuildExpenseTableViewModel(id)
