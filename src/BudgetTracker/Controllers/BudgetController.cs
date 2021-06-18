@@ -34,20 +34,28 @@ namespace BudgetTracker.Controllers
             });  
         }
         
-        [HttpPost]
+        [HttpPost("create-budget")]
         public IActionResult Create(UserBudgetsViewModel userBudgetsVm)
         {
             _budgetService.CreateBudget(userBudgetsVm, HttpContext.Session, ModelState);
             return RedirectToAction("Index", "Home");
         }
 
-        [HttpPost]
+        [HttpPost("add-budget-member")]
         public IActionResult AddMember(HomeDisplayViewModel model)
         {
-            if (_budgetService.AddMember(model.Username, model.BudgetId, ModelState))
+            if (!_budgetService.AddMember(model.Username, model.BudgetId, ModelState))
                 TempData["ModelErrors"] =  ModelErrorsHandler.ModelStateToErrorDict(ModelState);
 
             return RedirectToAction("Display", new { budgetId = model.BudgetId });
         }
+
+        [HttpPost("delete-budget")]
+        public IActionResult DeleteBudget(Guid budgetId)
+        {
+            _budgetService.DeleteBudget(budgetId);
+            return RedirectToAction("Index", "Home", new { budgetId });
+        }
+
     }
 }

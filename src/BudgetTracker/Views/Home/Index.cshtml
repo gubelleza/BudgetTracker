@@ -12,7 +12,10 @@ else
         {
             <div>
                 <a asp-controller="Budget" asp-action="Display" asp-route-budgetId="@budget.BudgetId">@budget.Name</a>
-                <button class="btn btn-outline-danger">Delete</button>
+                <form asp-controller="Budget" asp-action="DeleteBudget" method="post">
+                    <input type="hidden" value="@budget.BudgetId" name="budgetId" />
+                    <button type="submit" class="btn btn-outline-danger">Delete</button>
+                </form>
             </div>
         }
     }

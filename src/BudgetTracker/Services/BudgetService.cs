@@ -76,7 +76,7 @@ namespace BudgetTracker.Services
             var isMember = _context.BudgetMembers.Any(m => m.UserId == userId);
             if (isMember)
             {
-                modelState.AddModelError("NewMemberUserName", "Is already a member");
+                modelState.AddModelError("NewMemberUserName", $"{username} is already a member");
                 return false;
             }
             
@@ -85,6 +85,26 @@ namespace BudgetTracker.Services
                 UserId = userId,
                 BudgetId = budgetId
             });
+            _context.SaveChanges();
+
+            return true;
+        }
+
+        public bool DeleteBudget(Guid budgetId)
+        {
+            if (budgetId == default)
+                return false;
+
+            var budgetMember = _context
+                .BudgetMembers
+                .Include(bm => bm.Budget)
+                .Where(bm => bm.BudgetId == budgetId)
+                .FirstOrDefault();
+
+            if (budgetMember == null)
+                return false;
+
+            _context.BudgetMembers.Remove(budgetMember);
             _context.SaveChanges();
 
             return true;

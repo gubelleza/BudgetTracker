@@ -10,7 +10,7 @@ namespace BudgetTracker.Models.ViewModels
     {
         public Guid BudgetId { get; set; }
         
-        [Remote(action:"CheckUsernameExists", controller:"User")]
+        [Remote(action:"CheckUsernameExists", controller:"User", ErrorMessage = "User don't exist")]
         public string Username { get; set; }
         public ExpenseTableViewModel ExpenseTableViewModel { get; set; }
     }

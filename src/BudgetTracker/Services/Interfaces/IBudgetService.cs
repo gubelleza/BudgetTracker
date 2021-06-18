@@ -13,6 +13,6 @@ namespace BudgetTracker.Services.Interfaces
         public UserBudgetsViewModel BuildUserBudgetsViewModel(ISession session);
         public bool CreateBudget(UserBudgetsViewModel userBudgetsVm, ISession session, ModelStateDictionary modelState);
         public bool AddMember(string username, Guid budgetId, ModelStateDictionary modelState);
-
+        public bool DeleteBudget(Guid budgetId);
     }
 }
