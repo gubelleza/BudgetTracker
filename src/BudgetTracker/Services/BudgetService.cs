@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -54,6 +55,38 @@ namespace BudgetTracker.Services
                 UserId = session.GetUserId().Value
             });
             _context.SaveChanges();
+            return true;
+        }
+
+        public bool AddMember(string username, Guid budgetId, ModelStateDictionary modelState)
+        {
+            if (!modelState.IsValid)
+                return false;
+
+            var userId = _context.Users
+                .Where(u => u.Username == username)
+                .Select(u => u.UserId).FirstOrDefault();
+
+            if (userId == default)
+            {
+                modelState.AddModelError("NewMemberUserName", "User don't exists");
+                return false;
+            }
+
+            var isMember = _context.BudgetMembers.Any(m => m.UserId == userId);
+            if (isMember)
+            {
+                modelState.AddModelError("NewMemberUserName", "Is already a member");
+                return false;
+            }
+            
+            _context.BudgetMembers.Add(new BudgetMember
+            {
+                UserId = userId,
+                BudgetId = budgetId
+            });
+            _context.SaveChanges();
+
             return true;
         }
     }

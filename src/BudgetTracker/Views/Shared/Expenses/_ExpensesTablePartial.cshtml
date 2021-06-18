@@ -104,6 +104,7 @@
             <a asp-action="Delete" 
                asp-controller="Expense" 
                asp-route-id="@expense.ExpenseId" 
+               asp-route-budgetId="@expense.BudgetId" 
                class="text-danger"
                onclick="return confirm('Delete this row?')"
             >

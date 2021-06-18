@@ -20,17 +20,17 @@ namespace BudgetTracker.Controllers
             _expensesService = expensesService;
         }
 
-        [HttpGet("budget/display/id={id:Guid}")]
-        public IActionResult Display(Guid id)
+        [HttpGet("budget/display/id={budgetId:Guid}")]
+        public IActionResult Display(Guid budgetId)
         {
             if (TempData.TryGetValue("ModelErrors", out var errors) && 
                 errors is Dictionary<string, string> errorsDict)            
                 ModelErrorsHandler.PopulateModelState(ModelState, errorsDict);
 
-            ViewData[ViewDataKeys.BUDGET_ID] = id;
+            ViewData[ViewDataKeys.BUDGET_ID] = budgetId;
             return View(new HomeDisplayViewModel
             {
-                ExpenseTableViewModel = _expensesService.BuildExpenseTableViewModel(id)
+                ExpenseTableViewModel = _expensesService.BuildExpenseTableViewModel(budgetId)
             });  
         }
         
@@ -39,6 +39,15 @@ namespace BudgetTracker.Controllers
         {
             _budgetService.CreateBudget(userBudgetsVm, HttpContext.Session, ModelState);
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        public IActionResult AddMember(HomeDisplayViewModel model)
+        {
+            if (_budgetService.AddMember(model.Username, model.BudgetId, ModelState))
+                TempData["ModelErrors"] =  ModelErrorsHandler.ModelStateToErrorDict(ModelState);
+
+            return RedirectToAction("Display", new { budgetId = model.BudgetId });
         }
     }
 }

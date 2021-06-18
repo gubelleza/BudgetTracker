@@ -7,6 +7,7 @@
     <div class="shadow p-4 rounded-lg w-75 mt-2">
 
         <form method="post" asp-action="SubmitEditCategories">
+            <input type="hidden" asp-for="BudgetId" value="@Model.BudgetId"/>
             <table class="table">
                 <thead class="table-head text-center">
                 <tr>

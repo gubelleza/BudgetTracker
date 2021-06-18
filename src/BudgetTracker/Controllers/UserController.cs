@@ -49,7 +49,13 @@ namespace BudgetTracker.Controllers
             _userService.Logout(HttpContext.Session);
             return RedirectToAction("Index", "Home");
         }
-
+        
+        [AcceptVerbs("GET", "POST")]
+        public IActionResult CheckUsernameExists(string username)
+        {
+            return Json(!_userService.UsernameExists(username) ? "User don't exists" : "true");
+        }
+        
         [AcceptVerbs("GET", "POST")]
         public IActionResult ValidateUsername(string username)
         {

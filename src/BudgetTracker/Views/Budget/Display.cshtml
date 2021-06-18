@@ -1,8 +1,27 @@
+@using BudgetTracker.Util.Constants
 @model HomeDisplayViewModel
 
 @{ 
     ViewData["Title"] = "Home Page";
+    var budgetId = (Guid) ViewData[ViewDataKeys.BUDGET_ID];
 }
+
+<div id="add-member">
+    <button id="add-member-btn" class="btn btn-primary text-white mb-2"><i class="fa fa-user-plus mr-2"></i>Add member</button>
+    <div hidden id="add-member-form">
+        <form asp-controller="Budget" asp-action="AddMember" method="post">
+            <input type="hidden" asp-for="BudgetId" value="@budgetId"/>
+            <div class="form-group">
+                <label for="member-name">Username</label>
+                <span asp-validation-for="Username" class="text-danger"></span>
+                <input id="member-name" type="text" class="form-control" asp-for="Username"/>
+            </div>
+            <div class="form-group">
+                <input class="btn btn-outline-success" type="submit" value="Add"/>
+            </div>
+        </form>
+    </div>
+</div>
 
 @if (!Model.ExpenseTableViewModel.HasExpenses)
 {

@@ -49,6 +49,7 @@ namespace BudgetTracker.Services
             var editVm = new EditCategoriesViewModel
             {
                 Categories = categories,
+                BudgetId = budgetId
             };
             editVm.PopulateCategoriesToDelete(categories.Count);
             return editVm;
@@ -70,11 +71,12 @@ namespace BudgetTracker.Services
             var categories = new List<ExpenseCategory>();
 
             for (var i = 0; i < emptyCategoriesQuantity; i++)
-                categories.Add(new ExpenseCategory{ BudgetId = budgetId});
+                categories.Add(new ExpenseCategory());
 
             return new AddCategoriesViewModel<ExpenseCategory>
             {
-                Categories = categories
+                Categories = categories,
+                BudgetId = budgetId
             };
         }
         

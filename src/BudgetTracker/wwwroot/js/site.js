@@ -15,12 +15,10 @@ function toggleEdition(index) {
             if (element.hasAttribute("hidden"))
             {
                 element.removeAttribute("hidden");
-                console.log("displaying: " + element.innerHTML);
             }
             else
             {
                 element.setAttribute("hidden", "true");
-                console.log("hiding : " + element.innerHTML);
             }
         } 
     }
@@ -84,3 +82,18 @@ for (i = 0; i < checks.length; i++) {
         displayAlertIfAnyChecked(checks);
     });
 }
+
+// ADD MEMBER BUTTON
+function displayAddMemberForm() {
+    let addMemberForm = document.getElementById("add-member-form");
+    
+}
+
+let addMemberButton = document.getElementById("add-member-btn");
+addMemberButton.addEventListener("click", () => {
+    let addMemberForm = document.getElementById("add-member-form");
+    if (addMemberForm.hasAttribute("hidden"))
+        addMemberForm.removeAttribute("hidden");
+    else
+        addMemberForm.setAttribute("hidden", "true");
+})

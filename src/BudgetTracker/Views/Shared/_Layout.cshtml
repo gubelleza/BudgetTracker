@@ -24,9 +24,6 @@
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1 w-50 justify-content-start">
-                    <li class="nav-item">
-                        <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
                     @if (ViewData.TryGetValue(ViewDataKeys.BUDGET_ID, out var obj) && obj is Guid budgetId)
                     {
                         <li class="nav-item dropdown">
@@ -49,7 +46,7 @@
                                    asp-controller="Expense" 
                                    asp-action="EditCategories">Edit Categories</a>
                             </div>
-                        </li>   
+                        </li>
                     }
                 </ul>   
             

@@ -26,28 +26,28 @@ namespace BudgetTracker.Controllers
             return View(_expensesService.BuildCreateExpenseViewModel(budgetId));
         }
 
-        [HttpPost]
+        [HttpPost("submit-create")]
         public IActionResult SubmitCreate(CreateExpenseViewModel createExpenseVm)
         {
             if (_expensesService.AddExpense(createExpenseVm, ModelState))
             {
-                return RedirectToAction("Display", "Budget");
+                return RedirectToAction("Display", "Budget", new { budgetId = createExpenseVm.BudgetId });
             }
 
             return View("Create", 
                 _expensesService.BuildCreateExpenseViewModel(createExpenseVm.BudgetId));
         }
 
-        [HttpGet]
-        public IActionResult Delete(string id)
+        [HttpGet("delete")]
+        public IActionResult Delete(string id, Guid budgetId)
         {
             if (int.TryParse(id, out var intId))
                 _expensesService.DeleteExpense(intId); 
 
-            return RedirectToAction("Display", "Budget");
+            return RedirectToAction("Display", "Budget", new { budgetId });
         }
 
-        [HttpPost]
+        [HttpPost("edit")]
         public IActionResult Edit(ExpenseTableViewModel homeVm)
         {
             if (!_expensesService.EditExpense(homeVm, ModelState))
@@ -62,11 +62,12 @@ namespace BudgetTracker.Controllers
             return View(_expensesService.BuildAddCategoriesViewModel(3, budgetId));
         }
 
-        [HttpPost]
+        [HttpPost("submit-add-categories")]
         public IActionResult SubmitAddCategory(AddCategoriesViewModel<ExpenseCategory> addCategoriesVm)
         {
+            addCategoriesVm.Categories.ForEach(c => c.BudgetId = addCategoriesVm.BudgetId);
             _expensesService.AddCategories(addCategoriesVm.Categories);
-            return RedirectToAction("Display", "Budget");
+            return RedirectToAction("Display", "Budget", new { budgetId = addCategoriesVm.BudgetId });
         }
 
         [HttpGet("edit-categories/id={budgetId:Guid}")]
@@ -78,11 +79,11 @@ namespace BudgetTracker.Controllers
             return View(_expensesService.BuildEditCategoriesViewModel(budgetId));
         }
 
-        [HttpPost]
+        [HttpPost("submit-edit-categories")]
         public IActionResult SubmitEditCategories(EditCategoriesViewModel editCategoriesVm)
         {
             _expensesService.EditCategories(editCategoriesVm);
-            return RedirectToAction("Display", "Budget");
+            return RedirectToAction("Display", "Budget", new { budgetId = editCategoriesVm.BudgetId });
         }
 
         private static bool IsValidBudgetId(Guid budgetId) => budgetId != default;
