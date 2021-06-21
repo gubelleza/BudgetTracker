@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BudgetTracker.Controllers
 {
+    [Route("user")]
     public class UserController : Controller
     {
         private readonly IUsersService _userService;
@@ -13,13 +14,13 @@ namespace BudgetTracker.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
+        [HttpGet("create")]
         public IActionResult Create()
         {
             return View(new CreateUserViewModel());
         }
 
-        [HttpPost]
+        [HttpPost("submit-create")]
         public IActionResult SubmitCreate(CreateUserViewModel createUserVm)
         {
             if (_userService.CreateUser(createUserVm, ModelState))
@@ -28,13 +29,13 @@ namespace BudgetTracker.Controllers
             return View("Create", createUserVm);
         }
 
-        [HttpGet]
+        [HttpGet("login")]
         public IActionResult Login()
         {
             return View("Login", new LoginViewModel());
         }
 
-        [HttpPost]
+        [HttpPost(("submit-login"))]
         public IActionResult SubmitLogin(LoginViewModel loginVm)
         {
             if (_userService.Login(loginVm, ModelState, HttpContext.Session))
@@ -43,13 +44,19 @@ namespace BudgetTracker.Controllers
             return View("Login");
         }
 
-        [HttpPost]
+        [HttpGet("logout")]
         public IActionResult Logout()
         {
             _userService.Logout(HttpContext.Session);
             return RedirectToAction("Index", "Home");
         }
-
+        
+        [AcceptVerbs("GET", "POST", Route = "check-username-exists")]
+        public IActionResult CheckUsernameExists(string username)
+        {
+            return Json(!_userService.UsernameExists(username) ? "User don't exist" : "true");
+        }
+        
         [AcceptVerbs("GET", "POST")]
         public IActionResult ValidateUsername(string username)
         {

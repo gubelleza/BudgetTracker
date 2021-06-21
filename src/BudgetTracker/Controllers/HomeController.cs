@@ -11,27 +11,18 @@ namespace BudgetTracker.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private readonly IExpensesService _expensesService;
-
-        public HomeController(IExpensesService expensesService, ILogger<HomeController> logger)
+        private readonly IBudgetService _budgetService;
+        
+        public HomeController(IBudgetService budgetService)
         {
-            _expensesService = expensesService;
-            _logger = logger;
+            _budgetService = budgetService;
         }
 
         public IActionResult Index()
         {
-            if (TempData.TryGetValue("ModelErrors", out var errors) && 
-                errors is Dictionary<string, string> errorsDict)            
-                ModelErrorsHandler.PopulateModelState(ModelState, errorsDict);
-                        
-            return View(new HomeDisplayViewModel
-            {
-                ExpenseTableViewModel = _expensesService.BuildExpenseTableViewModel()
-            });
+            return View(_budgetService.BuildUserBudgetsViewModel(HttpContext.Session));
         }
-
+        
         public IActionResult Privacy()
         {
             return View();

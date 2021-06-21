@@ -1,0 +1,91 @@
+@model EditCategoriesViewModel
+
+<div class="d-flex flex-column align-items-center">
+    <div id="add-categories-title" class="border-bottom border-dark">
+        <h3>Edit Categories</h3>
+    </div>
+    <div class="shadow p-4 rounded-lg w-75 mt-2">
+
+        <form method="post" asp-action="SubmitEditCategories">
+            <input type="hidden" asp-for="BudgetId" value="@Model.BudgetId"/>
+            <table class="table">
+                <thead class="table-head text-center">
+                <tr>
+                    <th scope="col">Category Name</th>
+                    <th scope="col">Recurrence</th>
+                    <th scope="col">Delete?</th>
+                </tr>
+                </thead>
+                <tbody class="text-center">
+                @for (int i = 0; i < @Model.Categories.Count; i++)
+                {
+                    <input type="hidden"
+                           asp-for="Categories[i].CategoryId"
+                           value="@Model.Categories[i].CategoryId"/>
+                    <input type="hidden"
+                           asp-for="Categories[i].BudgetId"
+                           value="@Model.Categories[i].BudgetId"/>
+                    <tr>
+                        <td>
+                            <div class="form-group">
+                                <input class="form-control input-row-@i"
+                                       id="category-name-@i.ToString()"
+                                       type="text"
+                                       asp-for="Categories[i].CategoryName"
+                                       value="@Model.Categories[i].CategoryName"/>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <select
+                                    id="select-recurrence"
+                                    asp-for="Categories[i].Recurrence"
+                                    class="custom-select input-row-@i"
+                                    value="@Model.Categories[i].Recurrence">
+                                    @foreach (var item in Enum.GetValues<Recurrence>())
+                                    {
+                                        <option value="@item">@item.ToString()</option>
+                                    }
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <select
+                                    id="select-recurrence"
+                                    asp-for="Categories[i].TransactionType"
+                                    class="custom-select">
+                                    @foreach (var item in Enum.GetValues<TransactionType>())
+                                    {
+                                        <option value="@item">@item.ToString()</option>
+                                    }
+                                </select>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group d-flex justify-content-center">
+                                <input id="@i"
+                                       type="checkbox" class="form-check"
+                                       asp-for="DeleteCategories[i].Deleted"
+                                       value="true"/>
+                                <input type="hidden"
+                                       asp-for="DeleteCategories[i].Id"
+                                       value="@Model.Categories[i].CategoryId"/>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+            <div class="alert alert-danger" role="alert" id="delete-alert" hidden>
+                Deleting a Category will delete any records associated with it
+            </div>
+            <div class="d-flex justify-content-center">
+                <input id="confirm-edit"
+                       class="btn btn-success"
+                       type="submit"
+                       value="Confirm"/>
+            </div>
+        </form>
+    </div>
+</div>

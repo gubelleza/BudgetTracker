@@ -19,4 +19,12 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite.Design" Version="1.1.6" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\Shared\Inputs\_AmountPaidInputPartial.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Shared\Inputs\_CategoryInputPartial.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Shared\Inputs\_PaidAtInputPartial.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Shared\Inputs\_PaidByInputPartial.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Shared\Inputs\_RecurrenceInputPartial.cshtml" />
+    </ItemGroup>
+
 </Project>

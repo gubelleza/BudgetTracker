@@ -1,14 +1,16 @@
 using System;
 using System.Collections.Generic;
-using BudgetTracker.Models.Expenses;
+using BudgetTracker.Models.Transactions;
 
 namespace BudgetTracker.Models.ViewModels
 {
     public class EditCategoriesViewModel
     {
-        public List<ExpenseCategory> Categories { get; set; }
+        public List<TransactionCategory> Categories { get; set; }
         public List<CategoryToDelete> DeleteCategories { get; set; }
 
+        public Guid BudgetId { get; set; }
+        
         public void PopulateCategoriesToDelete(int quantity)
         {
             DeleteCategories = new List<CategoryToDelete>();

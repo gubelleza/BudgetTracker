@@ -3,14 +3,16 @@ using System;
 using BudgetTracker.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BudgetTracker.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210616132555_BudgetIds")]
+    partial class BudgetIds
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,13 +53,13 @@ namespace BudgetTracker.Migrations
                     b.ToTable("BudgetMembers");
                 });
 
-            modelBuilder.Entity("BudgetTracker.Models.Transactions.Transaction", b =>
+            modelBuilder.Entity("BudgetTracker.Models.Expenses.Expense", b =>
                 {
-                    b.Property<long>("TransactionId")
+                    b.Property<long>("ExpenseId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<decimal>("Amount")
+                    b.Property<decimal>("AmountPaid")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid>("BudgetId")
@@ -66,22 +68,22 @@ namespace BudgetTracker.Migrations
                     b.Property<string>("BudgetMemberName")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("TransactionCategoryId")
+                    b.Property<int>("ExpenseCategoryId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("TransactionDate")
+                    b.Property<DateTime>("PaidAt")
                         .HasColumnType("TEXT");
 
-                    b.HasKey("TransactionId");
+                    b.HasKey("ExpenseId");
 
                     b.HasIndex("BudgetId");
 
-                    b.HasIndex("TransactionCategoryId");
+                    b.HasIndex("ExpenseCategoryId");
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Expenses");
                 });
 
-            modelBuilder.Entity("BudgetTracker.Models.Transactions.TransactionCategory", b =>
+            modelBuilder.Entity("BudgetTracker.Models.Expenses.ExpenseCategory", b =>
                 {
                     b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
@@ -96,9 +98,6 @@ namespace BudgetTracker.Migrations
                     b.Property<int>("Recurrence")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("TransactionType")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("CategoryId");
 
                     b.HasIndex("BudgetId");
@@ -106,7 +105,57 @@ namespace BudgetTracker.Migrations
                     b.HasIndex("CategoryName")
                         .IsUnique();
 
-                    b.ToTable("TransactionsCategories");
+                    b.ToTable("ExpenseCategories");
+                });
+
+            modelBuilder.Entity("BudgetTracker.Models.Income.Income", b =>
+                {
+                    b.Property<int>("IncomeId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("AmountReceived")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("BudgetMemberName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("IncomeCategoryId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("ReceivedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Recurrence")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("IncomeId");
+
+                    b.HasIndex("IncomeCategoryId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Incomes");
+                });
+
+            modelBuilder.Entity("BudgetTracker.Models.Income.IncomeCategory", b =>
+                {
+                    b.Property<int>("IncomeCategoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("IncomeCategoryId");
+
+                    b.HasIndex("CategoryName")
+                        .IsUnique();
+
+                    b.ToTable("IncomeCategories");
                 });
 
             modelBuilder.Entity("BudgetTracker.Models.Users.User", b =>
@@ -154,7 +203,7 @@ namespace BudgetTracker.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BudgetTracker.Models.Transactions.Transaction", b =>
+            modelBuilder.Entity("BudgetTracker.Models.Expenses.Expense", b =>
                 {
                     b.HasOne("BudgetTracker.Models.Budgets.Budget", "Budget")
                         .WithMany()
@@ -162,18 +211,18 @@ namespace BudgetTracker.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BudgetTracker.Models.Transactions.TransactionCategory", "TransactionCategory")
+                    b.HasOne("BudgetTracker.Models.Expenses.ExpenseCategory", "ExpenseCategory")
                         .WithMany()
-                        .HasForeignKey("TransactionCategoryId")
+                        .HasForeignKey("ExpenseCategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Budget");
 
-                    b.Navigation("TransactionCategory");
+                    b.Navigation("ExpenseCategory");
                 });
 
-            modelBuilder.Entity("BudgetTracker.Models.Transactions.TransactionCategory", b =>
+            modelBuilder.Entity("BudgetTracker.Models.Expenses.ExpenseCategory", b =>
                 {
                     b.HasOne("BudgetTracker.Models.Budgets.Budget", "Budget")
                         .WithMany()
@@ -182,6 +231,25 @@ namespace BudgetTracker.Migrations
                         .IsRequired();
 
                     b.Navigation("Budget");
+                });
+
+            modelBuilder.Entity("BudgetTracker.Models.Income.Income", b =>
+                {
+                    b.HasOne("BudgetTracker.Models.Income.IncomeCategory", "IncomeCategory")
+                        .WithMany()
+                        .HasForeignKey("IncomeCategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BudgetTracker.Models.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("IncomeCategory");
+
+                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

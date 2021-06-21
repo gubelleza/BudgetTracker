@@ -1,23 +1,29 @@
-@model ExpenseTableViewModel
+@model TransactionsTableViewModel
 
 @{
     string SelectRowStyle(int index) => index % 2 == 0 ? "even-rows" : "odd-rows";
+
+    string SelectRowLabelIcon(Transaction transaction) => transaction.TransactionCategory.TransactionType switch
+    {
+        TransactionType.Expense => "fa-angle-double-down text-danger",
+        TransactionType.Income  => "fa-angle-double-up text-success"
+    };
     var i = 1;
 }
 
-@foreach (var expense in Model.Expenses.SelectMany(group => group))
+@foreach (var transaction in Model.Transactions.SelectMany(group => group))
 {   
-    <form id="@i.ToString()" asp-controller="Expense" asp-action="Edit">
+    <form id="@i.ToString()" asp-controller="Transaction" asp-action="Edit">
     </form>
     <tr class="@SelectRowStyle(i)">
-        <th class="align-middle" scope="row">@i</th>
+        <th class="align-middle" scope="row"><i class="fa @SelectRowLabelIcon(transaction)"></i></th>
         <td id="cat-name-row">
-            <div class="display-info-@i.ToString()">@expense.ExpenseCategory.CategoryName</div>
+            <div class="display-info-@i.ToString()">@transaction.TransactionCategory.CategoryName</div>
             <div hidden class="edit-info-@i.ToString()">
                 <select id="select-category"
-                        asp-for="ExpenseCategoryId"
+                        asp-for="TransactionCategoryId"
                         class="custom-select"
-                        value="@expense.ExpenseCategory.CategoryId"
+                        value="@transaction.TransactionCategory.CategoryId"
                         form="@i"
                 >
                     @foreach (var category in Model.CurrentCategories)
@@ -28,27 +34,27 @@
             </div>
         </td>
         <td id="amnt-paid-row">
-            <div class="display-info-@i.ToString()">@expense.AmountPaid.ToString("C")</div>
+            <div class="display-info-@i.ToString()">@transaction.Amount.ToString("C")</div>
             <div hidden class="edit-info-@i.ToString()">
                 <input id="amount-paid"
                        type="number"
                        step="any"
-                       asp-for="AmountPaid"
-                       value="@expense.AmountPaid"
-                       placeholder='@expense.AmountPaid.ToString("C")'
+                       asp-for="Amount"
+                       value="@transaction.Amount"
+                       placeholder='@transaction.Amount.ToString("C")'
                        class="form-control"
                        form="@i"/>
             </div>
         </td>
         <td id="recurrence-row">
-            <div class="display-info-@i.ToString()">@expense.ExpenseCategory.Recurrence</div>
+            <div class="display-info-@i.ToString()">@transaction.TransactionCategory.Recurrence</div>
             <div hidden class="edit-info-@i.ToString()">
                 <select id="select-recurrence"
                         asp-for="Recurrence"
-                        value=">@expense.ExpenseCategory.Recurrence"
+                        value=">@transaction.TransactionCategory.Recurrence"
                         class="custom-select"
                         onchange="return alert(
-                            'Changing the recurrence will impact all other expenses in the same category. Are ou sure?')"
+                            'Changing the recurrence will impact all other transactions in the same category. Are ou sure?')"
                         form="@i"
                 >
                     @foreach (var item in Enum.GetValues<Recurrence>())
@@ -59,23 +65,23 @@
             </div>
         </td>
         <td id="paid-at-row">
-            <div class="display-info-@i.ToString()">@expense.PaidAt.ToString("M")</div>
+            <div class="display-info-@i.ToString()">@transaction.TransactionDate.ToString("M")</div>
             <div hidden class="edit-info-@i.ToString()">
                 <input id="paid-at"
                        type="date"
-                       asp-for="PaidAt"
+                       asp-for="TransactionDate"
                        class="form-control"
-                       value='@expense.PaidAt.ToString("yyyy-MM-dd")'
+                       value='@transaction.TransactionDate.ToString("yyyy-MM-dd")'
                        form="@i"
             >
             </div>
         </td>
         <td id="paid-by-row">
-            <div class="display-info-@i.ToString()">@expense.BudgetMemberName</div>
+            <div class="display-info-@i.ToString()">@transaction.BudgetMemberName</div>
             <div hidden class="edit-info-@i.ToString()">
                 <select id="select-paid-by"
                         asp-for="BudgetMemberName"
-                        value="@expense.BudgetMemberName"
+                        value="@transaction.BudgetMemberName"
                         class="custom-select"
                         form="@i">
                     @foreach (var name in Model.BudgetMembersNames)
@@ -102,15 +108,16 @@
         </td>
         <td>
             <a asp-action="Delete" 
-               asp-controller="Expense" 
-               asp-route-id="@expense.ExpenseId" 
+               asp-controller="Transaction" 
+               asp-route-id="@transaction.TransactionId" 
+               asp-route-budgetId="@transaction.BudgetId" 
                class="text-danger"
                onclick="return confirm('Delete this row?')"
             >
                 <i class="fa fa-minus" aria-hidden="true"></i>
             </a>
         </td>
-        <input type="hidden" asp-for="ExpenseId" value="@expense.ExpenseId" form="@i"/>
+        <input type="hidden" asp-for="TransactionCategoryId" value="@transaction.TransactionId" form="@i"/>
     </tr>
     i++;
 }

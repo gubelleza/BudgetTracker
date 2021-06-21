@@ -1,10 +1,12 @@
+using System;
 using System.Collections.Generic;
-using BudgetTracker.Models.Expenses;
+using BudgetTracker.Models.Transactions;
 
 namespace BudgetTracker.Models.ViewModels
 {
-    public class AddCategoriesViewModel<TCategory>
+    public class AddCategoriesViewModel
     {
-        public List<TCategory> Categories { get; set; }
+        public List<TransactionCategory> Categories { get; set; }
+        public Guid BudgetId { get; set; }
     }
 }
