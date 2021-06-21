@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using BudgetTracker.Data;
 using BudgetTracker.Models.Budgets;
+using BudgetTracker.Models.Transactions;
 using BudgetTracker.Models.ViewModels;
 using BudgetTracker.Services.Interfaces;
 using BudgetTracker.Util.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 
 namespace BudgetTracker.Services
 {
@@ -28,7 +29,7 @@ namespace BudgetTracker.Services
                 Budgets = ListUserBudgets(session)
             };
         }
-        
+
         public List<Budget> ListUserBudgets(ISession session)
         {
             var userBudgets = _context

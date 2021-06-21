@@ -1,5 +1,5 @@
 using AutoMapper;
-using BudgetTracker.Models.Expenses;
+using BudgetTracker.Models.Transactions;
 using BudgetTracker.Models.ViewModels;
 
 namespace BudgetTracker.Util.MapProfiles
@@ -8,13 +8,13 @@ namespace BudgetTracker.Util.MapProfiles
     {
         public ExpenseProfile()
         {
-            CreateMap<ExpenseTableViewModel, Expense>()
+            CreateMap<TransactionsTableViewModel, Transaction>()
                 .ForMember(
-                    e => e.PaidAt, 
-                    o => o.MapFrom((src, dest, tp) => src.PaidAt ?? dest.PaidAt))
+                    e => e.TransactionDate, 
+                    o => o.MapFrom((src, dest, tp) => src.TransactionDate ?? dest.TransactionDate))
                 .ForAllMembers(o => o.Condition((src, dest, sourceMember) => sourceMember != null));
 
-            CreateMap<CreateExpenseViewModel, Expense>();
+            CreateMap<AddTransactionViewModel, Transaction>();
         }
     }
 }

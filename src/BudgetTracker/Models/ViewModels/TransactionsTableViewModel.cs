@@ -3,38 +3,38 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using BudgetTracker.Models.Enums;
-using BudgetTracker.Models.Expenses;
+using BudgetTracker.Models.Transactions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace BudgetTracker.Models.ViewModels
 {
-    public class ExpenseTableViewModel
+    public class TransactionsTableViewModel
     {
         #region DisplayExpenses
         [BindNever]
-        public List<IGrouping<string, Expense>> Expenses { get; set; }
+        public List<IGrouping<string, Transaction>> Transactions { get; set; }
         
         [BindNever]
-        public bool HasExpenses => Expenses != null && Expenses.Any();
+        public bool HasTransactions => Transactions != null && Transactions.Any();
         #endregion
         
         #region ExpenseInput
-        public int ExpenseId { get; set; }
+        public int TransctionId { get; set; }
         public Recurrence Recurrence { get; set; }
         
-        [Range(1.0, Double.MaxValue, ErrorMessage = "Amount paid can't be zero")]
-        public decimal? AmountPaid { get; set; }
+        [Range(1.0, double.MaxValue, ErrorMessage = "Amount paid be zero")]
+        public decimal? Amount { get; set; }
         
-        public DateTime? PaidAt { get; set; }
+        public DateTime? TransactionDate { get; set; }
         public string BudgetMemberName { get; set; }
-        public int? ExpenseCategoryId { get; set; }
+        public int? TransactionCategoryId { get; set; }
         
         public Guid BudgetId { get; set; }
         #endregion
         
         #region ExpenseFormAttributes
         [BindNever]
-        public List<ExpenseCategory> CurrentCategories { get; set; }
+        public List<TransactionCategory> CurrentCategories { get; set; }
         
         [BindNever]
         public List<string> BudgetMembersNames { get; set; }

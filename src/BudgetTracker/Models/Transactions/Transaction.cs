@@ -5,19 +5,19 @@ using BudgetTracker.Models.Budgets;
 using BudgetTracker.Models.Enums;
 using BudgetTracker.Models.Users;
 
-namespace BudgetTracker.Models.Expenses
+namespace BudgetTracker.Models.Transactions
 {
-    public class Expense
+    public class Transaction
     {
         [Key]
-        public long ExpenseId { get; set; }
-        public decimal AmountPaid { get; set; }
-        public DateTime PaidAt { get; set; }
+        public long TransactionId { get; set; }
+        public decimal Amount { get; set; }
+        public DateTime TransactionDate { get; set; }
         public string BudgetMemberName { get; set; }
         
-        [ForeignKey("ExpenseCategory")]
-        public int ExpenseCategoryId { get; set; }
-        public virtual ExpenseCategory ExpenseCategory { get; set; }
+        [ForeignKey("TransactionCategory")]
+        public int TransactionCategoryId { get; set; }
+        public virtual TransactionCategory TransactionCategory { get; set; }
         
         [ForeignKey("Budget")]
         public Guid BudgetId { get; set; }

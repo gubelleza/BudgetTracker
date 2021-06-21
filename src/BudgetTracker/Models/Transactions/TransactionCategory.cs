@@ -1,20 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using BudgetTracker.Models.Budgets;
 using BudgetTracker.Models.Enums;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BudgetTracker.Models.Expenses
+namespace BudgetTracker.Models.Transactions
 {
-    [Microsoft.EntityFrameworkCore.Index(nameof(ExpenseCategory.CategoryName), IsUnique = true)]
-    public class ExpenseCategory
+    [Microsoft.EntityFrameworkCore.Index(nameof(TransactionCategory.CategoryName), IsUnique = true)]
+    public class TransactionCategory
     {
         [Key]
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
         public Recurrence Recurrence { get; set; }
-        
+        public TransactionType TransactionType { get; set; }
+
         [ForeignKey("Budget")]
         public Guid BudgetId { get; set; }
         public Budget Budget { get; set; }

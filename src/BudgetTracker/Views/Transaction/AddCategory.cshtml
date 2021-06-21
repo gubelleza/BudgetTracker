@@ -1,20 +1,20 @@
-@model AddCategoriesViewModel<ExpenseCategory>
+@model AddCategoriesViewModel
 
 <div class="d-flex flex-column align-items-center">
     <div id="add-categories-title" class="border-bottom border-dark">
         <h3>Add New Categories</h3>
     </div>
     <div class="shadow p-4 rounded-lg w-50">
-        <form method="post" asp-controller="Expense" asp-action="SubmitAddCategory">
+        <form method="post" asp-controller="Transaction" asp-action="SubmitAddCategory">
             @for (int i = 0; i < @Model.Categories.Count; i++)
             {
                 <div class='d-flex justify-content-center @(i == 1 ? "mt-2 mb-1" : "mt-1 mb-2")'>
-                    <div class="form-group mr-4 ml-4 w-50">
+                    <div class="form-group mr-4 ml-4">
                         <label for="category-name-@i.ToString()">Category Name</label>
                         <input class="form-control"
                                id="category-name-@i.ToString()" type="text" asp-for="Categories[i].CategoryName"/>
                     </div>
-                    <div class="form-group mr-4 ml-4 w-50">
+                    <div class="form-group mr-4 ml-4">
                         <label for="select-recurrence">Recurrence:</label>
                         <select
                             id="select-recurrence"
@@ -26,7 +26,20 @@
                             }
                         </select>
                     </div>
+                    <div class="form-group mr-4 ml-4">
+                       <label for="select-recurrence">Type:</label>
+                        <select
+                            id="select-recurrence"
+                            asp-for="Categories[i].TransactionType"
+                            class="custom-select">
+                            @foreach (var item in Enum.GetValues<TransactionType>())
+                            {
+                                <option value="@item">@item.ToString()</option>
+                            }
+                        </select>
+                    </div>
                 </div>
+
             }
             <div>
                 <input type="hidden" asp-for="BudgetId" value="@Model.BudgetId"/>

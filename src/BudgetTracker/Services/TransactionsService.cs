@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using BudgetTracker.Data;
-using BudgetTracker.Models.Expenses;
+using BudgetTracker.Models.Transactions;
 using BudgetTracker.Models.ViewModels;
 using BudgetTracker.Services.Interfaces;
 using BudgetTracker.Util.Extensions;
@@ -13,39 +13,40 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BudgetTracker.Services
 {
-    public class ExpensesService : IExpensesService
+    public class TransactionsService : ITransactionsService
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         
-        public ExpensesService(ApplicationDbContext context, IMapper mapper)
+        public TransactionsService(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        public void DeleteExpense(int id)
+        public void DeleteTransaction(int id)
         {
-            var expense = _context.Expenses.FirstOrDefault(e => e.ExpenseId == id);
+            var transaction = _context.Transactions.FirstOrDefault(e => e.TransactionId == id);
 
             // TODO: PUT A NULL VERIFICATION HERE
-            _context.Remove(expense);
+            _context.Remove(transaction);
             _context.SaveChanges();
         }
 
-        public ExpenseTableViewModel BuildExpenseTableViewModel(Guid budgetId)
+        public TransactionsTableViewModel BuildTransactionsTableViewModel(Guid budgetId)
         {
-            return new ExpenseTableViewModel
+            return new TransactionsTableViewModel
             {
                 BudgetMembersNames = GetBudgetMembersNames(budgetId),
-                CurrentCategories = GetExpenseCategories(budgetId),
-                Expenses = GetCurrentMonthExpenses(budgetId)
+                CurrentCategories = GetTransactionsCategories(budgetId),
+                Transactions = GetCurrentMonthTransactions(budgetId)
             };        
         }
 
         public EditCategoriesViewModel BuildEditCategoriesViewModel(Guid budgetId)
         {
-            var categories = _context.ExpenseCategories.Where(c => c.BudgetId == budgetId).ToList();
+            var categories = _context.TransactionsCategories
+                .Where(c => c.BudgetId == budgetId).ToList();
             var editVm = new EditCategoriesViewModel
             {
                 Categories = categories,
@@ -55,25 +56,25 @@ namespace BudgetTracker.Services
             return editVm;
         }
         
-        public CreateExpenseViewModel BuildCreateExpenseViewModel(Guid budgetId)
+        public AddTransactionViewModel BuildAddTransactionViewModel(Guid budgetId)
         {
-            return new CreateExpenseViewModel
+            return new AddTransactionViewModel
             {
                 BudgetMembersNames = GetBudgetMembersNames(budgetId),
-                CurrentCategories = GetExpenseCategories(budgetId),
+                CurrentCategories = GetTransactionsCategories(budgetId),
                 BudgetId = budgetId
             };
         }
 
-        public AddCategoriesViewModel<ExpenseCategory> BuildAddCategoriesViewModel(
+        public AddCategoriesViewModel BuildAddCategoriesViewModel(
             int emptyCategoriesQuantity, Guid budgetId)
         {
-            var categories = new List<ExpenseCategory>();
+            var categories = new List<TransactionCategory>();
 
             for (var i = 0; i < emptyCategoriesQuantity; i++)
-                categories.Add(new ExpenseCategory());
+                categories.Add(new TransactionCategory());
 
-            return new AddCategoriesViewModel<ExpenseCategory>
+            return new AddCategoriesViewModel
             {
                 Categories = categories,
                 BudgetId = budgetId
@@ -88,58 +89,59 @@ namespace BudgetTracker.Services
                 .ToList();
         }
         
-        public List<ExpenseCategory> GetExpenseCategories(Guid budgetId)
+        public List<TransactionCategory> GetTransactionsCategories(Guid budgetId)
         {
             return _context
-                .ExpenseCategories
+                .TransactionsCategories
                 .Where(c => c.BudgetId == budgetId)
                 .OrderBy(ec => ec.CategoryName)
                 .ToList();
         }
 
-        public bool AddCategories(List<ExpenseCategory> expenseCategories)
+        public bool AddCategories(List<TransactionCategory> transactionsCategories)
         {
-            _context.AddRange(expenseCategories.Where(c => !string.IsNullOrEmpty(c.CategoryName)));
+            _context.AddRange(transactionsCategories.Where(c => !string.IsNullOrEmpty(c.CategoryName)));
             _context.SaveChanges();
 
             return true;
         }
         
-        public List<IGrouping<string, Expense>> GetCurrentMonthExpenses(Guid budgetId)
+        public List<IGrouping<string, Transaction>> GetCurrentMonthTransactions(Guid budgetId)
         {
-            var expenses = _context
-                .Expenses
-                .Where(e => e.PaidAt.Month == DateTime.Now.Month && e.BudgetId == budgetId)
-                .Include(e => e.ExpenseCategory)
-                .OrderBy(e => e.PaidAt)
+            var transactions = _context
+                .Transactions
+                .Where(e => e.TransactionDate.Month == DateTime.Now.Month && e.BudgetId == budgetId)
+                .Include(e => e.TransactionCategory)
+                .OrderBy(e => e.TransactionDate)
                 .ToList()
-                .GroupBy(e => e.ExpenseCategory.CategoryName);
+                .GroupBy(e => e.TransactionCategory.CategoryName);
                 
-            return expenses.ToList();
+            return transactions.ToList();
         }
 
-        public bool EditExpense(ExpenseTableViewModel expenseEditVm, ModelStateDictionary modelState)
+        public bool EditTransaction(TransactionsTableViewModel transactionEditVm, ModelStateDictionary modelState)
         {
-            var currentExpense = _context.Expenses.FirstOrDefault(e => e.ExpenseId == expenseEditVm.ExpenseId);
+            var currentExpense = _context.Transactions.FirstOrDefault(
+                e => e.TransactionId == transactionEditVm.TransactionCategoryId);
 
             if (currentExpense == null || !modelState.IsValid)
             {
                 return false;
             }
-            currentExpense = _mapper.Map(expenseEditVm, currentExpense);
+            currentExpense = _mapper.Map(transactionEditVm, currentExpense);
 
-            _context.Expenses.Update(currentExpense);
+            _context.Transactions.Update(currentExpense);
             _context.SaveChanges();
 
             return true;
         }
 
-        public bool AddExpense(CreateExpenseViewModel expenseInputVm, ModelStateDictionary modelState)
+        public bool AddTransaction(AddTransactionViewModel addTransactionVm, ModelStateDictionary modelState)
         {
             if (modelState.IsValid)
             {
-                var expense = _mapper.Map<Expense>(expenseInputVm);
-                _context.Expenses.Add(expense);
+                var expense = _mapper.Map<Transaction>(addTransactionVm);
+                _context.Transactions.Add(expense);
                 _context.SaveChanges();
                 return true;
             }
@@ -168,7 +170,7 @@ namespace BudgetTracker.Services
             
             if (categoriesToUpdate.Any())
             {
-                _context.ExpenseCategories.UpdateRange(categoriesToUpdate);
+                _context.TransactionsCategories.UpdateRange(categoriesToUpdate);
                 return true;
             }
 
@@ -188,7 +190,7 @@ namespace BudgetTracker.Services
                 var categoriesToDelete = editCategoriesVm
                     .Categories
                     .Where(c => deleteIds.Contains(c.CategoryId));
-                _context.ExpenseCategories.RemoveRange(categoriesToDelete);
+                _context.TransactionsCategories.RemoveRange(categoriesToDelete);
                 return true;
             }
 

@@ -39,27 +39,29 @@
     </div>
 </div>
 
-@if (!Model.ExpenseTableViewModel.HasExpenses)
+@if (!Model.ExpenseTableViewModel.HasTransactions)
 {
-    <div>There aren't any expenses to show for this month @DateTime.Now.ToString("MM/yyyy")</div>
+    <div>There aren't any transactions to show for this month @DateTime.Now.ToString("MM/yyyy")</div>
 }
 else
 {
     <table class="table shadow rounded-sm">
         <thead class="table-head text-center">
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Category</th>
-                <th scope="col">Amount Paid</th>
-                <th scope="col">Recurrence</th>
-                <th scope="col">Paid At</th>
-                <th scope="col">Paid By</th>
-                <th scope="col">Edit</th>
-                <th scope="col">Remove</th>
-            </tr>
+        <tr>
+            <th scope="col"><i class="fa fa-money-bill"></i></th>
+            <th scope="col">Category</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Recurrence</th>
+            <th scope="col">Date</th>
+            <th scope="col">Owner</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Remove</th>
+        </tr>
         </thead>
         <tbody class="text-center">
-            <partial name="Expenses/_ExpensesTablePartial" model="@Model.ExpenseTableViewModel" />
+        <partial name="Expenses/_ExpensesTablePartial" model="@Model.ExpenseTableViewModel" />
         </tbody>
     </table>
+    <partial name="Partials/_StatsSummaryPartial" 
+             model="@Model.ExpenseTableViewModel.Transactions.SelectMany(group => group).ToList()"/>
 }

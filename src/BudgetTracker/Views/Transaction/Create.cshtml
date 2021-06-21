@@ -1,4 +1,4 @@
-@model CreateExpenseViewModel
+@model AddTransactionViewModel
 
 <div class="d-flex flex-column align-items-center">
     <div id="add-categories-title" class="border-bottom border-dark">
@@ -7,19 +7,19 @@
     <div class="shadow p-4 rounded-lg w-50">
         <form asp-action="SubmitCreate" method="post">
         <div class="form-group">
-            <label for="amount-paid">Amount Paid:</label>
-            <span asp-validation-for="AmountPaid" class="text-danger"></span>
+            <label for="amount-paid">Amount:</label>
+            <span asp-validation-for="Amount" class="text-danger"></span>
             <input 
                 id="amount-paid" 
                 type="number" 
                 step="any" 
-                asp-for="AmountPaid" 
-                value="@Model.AmountPaid"
+                asp-for="Amount" 
+                value="@Model.Amount"
                 class="form-control" 
             />
         </div>
         <div class="form-group">
-            <label for="select-paid-by">Paid By:</label>
+            <label for="select-paid-by">Owner:</label>
             <span asp-validation-for="BudgetMemberName" class="text-danger"></span>
             <select 
                     id="select-paid-by" 
@@ -34,12 +34,12 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="paid-at">Paid At:</label>
-            <span asp-validation-for="PaidAt" class="text-danger"></span>
+            <label for="paid-at">Date:</label>
+            <span asp-validation-for="TransactionDate" class="text-danger"></span>
             <input 
                    id="paid-at" 
-                   type="date" 
-                   asp-for="PaidAt" 
+                   type="date"
+                   asp-for="TransactionDate" 
                    class="form-control" 
                    value="@DateTime.Now.ToString("yyyy-MM-dd")"
             >
@@ -48,9 +48,9 @@
             <label for="select-category">Category:</label>
             <select 
                     id="select-category" 
-                    asp-for="ExpenseCategoryId" 
+                    asp-for="TransactionCategoryId" 
                     class="custom-select"
-                    value="@Model.ExpenseCategoryId"
+                    value="@Model.TransactionCategoryId"
             >
                 @foreach (var category in Model.CurrentCategories)
                 {

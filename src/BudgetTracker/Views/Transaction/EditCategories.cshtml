@@ -50,6 +50,19 @@
                             </div>
                         </td>
                         <td>
+                            <div class="form-group">
+                                <select
+                                    id="select-recurrence"
+                                    asp-for="Categories[i].TransactionType"
+                                    class="custom-select">
+                                    @foreach (var item in Enum.GetValues<TransactionType>())
+                                    {
+                                        <option value="@item">@item.ToString()</option>
+                                    }
+                                </select>
+                            </div>
+                        </td>
+                        <td>
                             <div class="form-group d-flex justify-content-center">
                                 <input id="@i"
                                        type="checkbox" class="form-check"

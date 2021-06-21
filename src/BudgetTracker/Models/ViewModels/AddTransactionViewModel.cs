@@ -1,5 +1,5 @@
 ﻿using BudgetTracker.Models.Enums;
-using BudgetTracker.Models.Expenses;
+using BudgetTracker.Models.Transactions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -8,24 +8,24 @@ using System.Threading.Tasks;
 
 namespace BudgetTracker.Models.ViewModels
 {
-    public class CreateExpenseViewModel 
+    public class AddTransactionViewModel 
     {
         [Required]
         public Recurrence Recurrence { get; set; }
         
         [Required]
-        public decimal? AmountPaid { get; set; }
+        public decimal? Amount { get; set; }
         
         [Required]
-        public DateTime? PaidAt { get; set; }
+        public DateTime? TransactionDate { get; set; }
         
         public Guid BudgetId { get; set; }
         
         public string BudgetMemberName { get; set; }
         
-        public int? ExpenseCategoryId { get; set; }
+        public int? TransactionCategoryId { get; set; }
         
-        public List<ExpenseCategory> CurrentCategories { get; set; }
+        public List<TransactionCategory> CurrentCategories { get; set; }
         public List<string> BudgetMembersNames { get; set; }
     }
 }

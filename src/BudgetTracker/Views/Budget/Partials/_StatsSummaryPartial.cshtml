@@ -1,0 +1,52 @@
+﻿@using BudgetTracker.Services.Interfaces
+@inject IStatsService _statsService
+@model List<Transaction>
+@{
+    string SelectLabelIcon(TransactionType transactionType) => transactionType switch
+    {
+        TransactionType.Expense => "fa fa-angle-double-down text-danger",
+        TransactionType.Income  => "fa fa-angle-double-up text-success"
+    };
+    
+    string SelectDiffIcon(decimal diff) => diff switch
+    {
+        <= 0 => "fa fa-angle-double-down text-danger",
+        > 0  => "fa fa-angle-double-up text-success"
+        };
+}
+
+<div class="d-flex flex-wrap justify-content-center mt-3" id="summary">
+    <div class="w-100 text-center">
+        <h3>Summary Stats</h3>
+    </div>
+    @foreach (var item in Enum.GetValues<TransactionType>())
+    {
+        <div class="d-flex flex-column rounded shadow-lg m-3 p-4">
+            <div><i class="@SelectLabelIcon(item)"></i> <span class="mr-1 font-weight-bold">Mean</span></div>
+            <div class="mt-2"><i class="fa fa-money-bill"></i> @_statsService.CalcMean(@Model, item).ToString("c")</div>
+        </div>
+
+        var max = @_statsService.GetMax(@Model, item);
+        <div class="d-flex flex-column rounded shadow-lg m-2 p-4">
+            <div><i class="@SelectLabelIcon(item)"></i> <span class="ml-1 font-weight-bold">Max</span></div>
+            <div class="mt-2"><i class="fa fa-money-bill"></i> <span class="mr-1">@max.Amount.ToString("c")</span></div>
+            <div class="mt-2"><i class="fa fa-user"></i> <span class="mr-1">@max.BudgetMemberName</span></div>
+        </div>
+
+        var min = @_statsService.GetMin(@Model, item);
+        <div class="d-flex flex-column rounded shadow-lg m-2 p-4">
+            <div><i class="@SelectLabelIcon(item)"></i> <span class="ml-1 font-weight-bold">Min</span></div>
+            <div class="mt-2"><i class="fa fa-money-bill"></i> @min.Amount.ToString("c")</div>
+            <div class="mt-2"><i class="fa fa-user"></i> @min.BudgetMemberName</div>
+        </div>
+    }
+@foreach (var username in @Model.Select(t => t.BudgetMemberName).Distinct())
+{
+    var min = @_statsService.CalcDifference(@Model, username);
+    <div class="d-flex flex-column rounded shadow-lg m-2 p-4">
+        <div><i class="@SelectDiffIcon(min)"></i> <span class="ml-1 font-weight-bold">Difference</span></div>
+        <div class="mt-2"><i class="fa fa-money-bill"></i> @min.ToString("c")</div>
+        <div class="mt-2"><i class="fa fa-user"></i> @username</div>
+    </div>
+}
+</div>

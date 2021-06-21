@@ -12,12 +12,12 @@ namespace BudgetTracker.Controllers
     public class BudgetController : Controller
     {
         private readonly IBudgetService _budgetService;
-        private readonly IExpensesService _expensesService;
+        private readonly ITransactionsService _transactionsService;
 
-        public BudgetController(IBudgetService budgetService, IExpensesService expensesService)
+        public BudgetController(IBudgetService budgetService, ITransactionsService transactionsService)
         {
             _budgetService = budgetService;
-            _expensesService = expensesService;
+            _transactionsService = transactionsService;
         }
 
         [HttpGet("budget/display/id={budgetId:Guid}")]
@@ -30,7 +30,7 @@ namespace BudgetTracker.Controllers
             ViewData[ViewDataKeys.BUDGET_ID] = budgetId;
             return View(new HomeDisplayViewModel
             {
-                ExpenseTableViewModel = _expensesService.BuildExpenseTableViewModel(budgetId)
+                ExpenseTableViewModel = _transactionsService.BuildTransactionsTableViewModel(budgetId)
             });  
         }
         
