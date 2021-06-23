@@ -1,15 +1,13 @@
-using System;
 using System.Linq;
-using System.Linq.Expressions;
 using AutoMapper;
 using BudgetTracker.Data;
 using BudgetTracker.Models.Users;
 using BudgetTracker.Models.ViewModels;
 using BudgetTracker.Services.Interfaces;
 using BudgetTracker.Util.Extensions;
-using LinqKit;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using static BudgetTracker.Util.Constants.ModelStateErrors;
 
 namespace BudgetTracker.Services
 {
@@ -36,6 +34,11 @@ namespace BudgetTracker.Services
         
         public bool CreateUser(CreateUserViewModel createUserVm, ModelStateDictionary modelState)
         {
+            ValidateIfUsernameExists(createUserVm, modelState);
+            ValidateIfEmailExists(createUserVm, modelState);
+            ValidateIfPasswordsMatch(createUserVm, modelState);
+            ValidateIfEmailsMatch(createUserVm, modelState);
+            
             if (!modelState.IsValid)
                 return false;
 
@@ -46,35 +49,33 @@ namespace BudgetTracker.Services
             createUserVm.ResetPassword();
             return true;
         }
-
-        public void Logout(ISession session)
+        
+        private void ValidateIfUsernameExists(CreateUserViewModel createUserVm, ModelStateDictionary modelState)
         {
-            session.RemoveUserData();
+            if (UsernameExists(createUserVm.Username))
+                modelState.AddModelError(nameof(createUserVm.Username), DATA_ALREADY_EXISTS);
         }
         
-        public bool Login(LoginViewModel loginVm, ModelStateDictionary modelState, ISession session)
+        private void ValidateIfEmailExists(CreateUserViewModel createUserVm, ModelStateDictionary modelState)
         {
-            if (!modelState.IsValid)
-                return false;
+            if (EmailExists(createUserVm.Email))
+                modelState.AddModelError(nameof(createUserVm.Email), DATA_ALREADY_EXISTS);
+        }
 
-            var user = _context.Users.FirstOrDefault(
-                u => u.Username == loginVm.UsernameOrEmail || u.Email == loginVm.UsernameOrEmail);
-
-            if (user == null || !HasValidPassword(loginVm, user))
+        private void ValidateIfPasswordsMatch(CreateUserViewModel createUserVm, ModelStateDictionary modelState)
+        {
+            if (!createUserVm.PasswordsMatch)
             {
-                modelState.AddModelError("summary", "Wrong username or password");
-                return false;
+                modelState.AddModelError(nameof(createUserVm.ConfirmPassword), PASSWORDS_MUST_MATCH);
             }
-
-            session.SetUserId(user.UserId);
-            session.SetUsername(user.Username);
-            return true;
         }
-
-        private bool HasValidPassword(LoginViewModel loginVm, User storedUser)
+        
+        private void ValidateIfEmailsMatch(CreateUserViewModel createUserVm, ModelStateDictionary modelState)
         {
-            return BCrypt.Net.BCrypt.Verify(loginVm.Password, storedUser.Password);
+            if (!createUserVm.EmailsMatch)
+            {
+                modelState.AddModelError(nameof(createUserVm.ConfirmEmail), EMAILS_MUST_MATCH);
+            }
         }
-
     }
 }
